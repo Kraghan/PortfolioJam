@@ -1,0 +1,14 @@
+dev_log:
+    resource: "@DevLogBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+portfolio:
+    resource: "@PortfolioBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+admin:
+    resource: "@AdminBundle/Controller/"
+    type:     annotation
+    prefix:   /

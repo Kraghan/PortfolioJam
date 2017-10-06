@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href="{{ asset("CSS/bootstrap.min.css") }}" rel="stylesheet" media="all">
+<link href="{{ asset("CSS/bootstrap-theme.min.css") }}" rel="stylesheet" media="all">
+<link rel="stylesheet" href="{{ asset("CSS/login_style.css") }}">
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<body>
+    {% for flash_message in app.session.flashBag.get('error') %}
+        <div class="alert alert-danger alert-dismissable fade in">
+            {{ flash_message }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+    {% endfor %}
+    <form method="post" autocomplete="off">
+        <div class="centered">
+            <h1>Connexion : </h1>
+            <div class="row">
+                <div class="col-xs-8 col-md-8 col-lg-8">Login : </div>
+                <div class="col-xs-12 col-md-12 col-lg-12"><input type="text" name="login"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-8 col-md-8 col-lg-8">Password : </div>
+                <div class="col-xs-12 col-md-12 col-lg-12"><input type="password" name="password"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-8 col-md-8 col-lg-8">&nbsp;</div>
+                <div class="col-xs-12 col-md-12 col-lg-12"><input type="submit" value="Connexion" class="btn-primary"></div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

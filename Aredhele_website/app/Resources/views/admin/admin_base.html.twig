@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href="{{ asset("CSS/bootstrap.min.css") }}" rel="stylesheet" media="all">
+<link href="{{ asset("CSS/bootstrap-theme.min.css") }}" rel="stylesheet" media="all">
+<link rel="stylesheet" href="{{ asset("CSS/admin_style.css") }}">
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="//cdn.ckeditor.com/4.7.0/standard/ckeditor.js"></script>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- <div class="navbar-header">
+                <a class="navbar-brand" href="#">Super site de la mort</a>
+            </div> -->
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/admin/logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/admin/changepassword"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row-full-height">
+        <div class="col-full-height col-lg-3 col-xs-3 col-md-3 sidebar-tabs">
+            <ul class="list-group ">
+                <li class="list-group-item">
+                    <a href="/admin/dashboard" class="list-group-item no-border">Dashboard</a>
+                </li>
+                <li class="list-group-item">
+
+                    <div class="dropdown">
+                        <button type="button" class="list-group-item dropdown-toggle no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Portfolio <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/">Voir sur le site</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/admin/content">Modifier le contenu</a></li>
+                            <li><a href="/admin/socialNetwork">Gérer les réseaux sociaux</a></li>
+                            <li><a href="/admin/skills">Gérer les compétences</a></li>
+                            <li><a href="/admin/project">Gérer les projets</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+
+                    <div class="dropdown">
+                        <button type="button" class="list-group-item dropdown-toggle no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            CV <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/CV">Voir sur le site</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Modifier le contenu</a></li>
+                            <li><a href="#">Ajouter un projet</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+
+                    <div class="dropdown">
+                        <button type="button" class="list-group-item dropdown-toggle no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Blog <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/blog">Voir sur le site</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Modifier le contenu</a></li>
+                            <li><a href="#">Ajouter un projet</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+
+                    <div class="dropdown">
+                        <button type="button" class="list-group-item dropdown-toggle no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Site <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Voir sur le site</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Modifier le contenu</a></li>
+                            <li><a href="#">Ajouter un projet</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-full-height col-lg-21 col-xs-21 col-md-21 content">
+            {% for flash_message in app.session.flashBag.get('success') %}
+                <div class="alert alert-success alert-dismissable fade in">
+                    {{ flash_message }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                </div>
+            {% endfor %}
+
+            {% for flash_message in app.session.flashBag.get('notice') %}
+                <div class="alert alert-warning alert-dismissable fade in">
+                    {{ flash_message }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                </div>
+            {% endfor %}
+
+            {% for flash_message in app.session.flashBag.get('error') %}
+                <div class="alert alert-danger alert-dismissable fade in">
+                    {{ flash_message }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                </div>
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        {% block javascripts %}{% endblock %}
+    </script>
+
+</body>
+</html>

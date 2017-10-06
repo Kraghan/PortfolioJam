@@ -1,0 +1,86 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+    <div class="content-inner">
+        <h2>Gestion des compétences</h2>
+        <div class="well demi">
+            <h3>Nouvelle compétence</h3>
+            <div>
+                <form enctype="multipart/form-data" method="post" autocomplete="off">
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="nom">Nom</label>
+                            </td>
+                            <td>
+                                <input type="text" id="nom" name="nom" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="pourcentage">Pourcentage</label>
+                            </td>
+                            <td>
+                                <input type="range" id="pourcentage" name="pourcentage" max="100" min="0" step="5" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="picto">Picto</label>
+                            </td>
+                            <td>
+                                <input type="file" id="picto" name="picto" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% if skills|length != 0 %}
+            <div class="well">
+                <h3>Compétences existantes</h3>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+                            <th>
+                                Pourcentage
+                            </th>
+                            <th>
+                                Picto
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for skill in skills %}
+                            <tr>
+                                <td>{{ skill.name }}</td>
+                                <td>{{ skill.skillProgress }}%</td>
+                                <td><i class="fa {{ skill.picto }} w3-hover-opacity"></i></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

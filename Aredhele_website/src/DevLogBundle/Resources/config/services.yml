@@ -1,0 +1,4 @@
+services:
+#    dev_log.example:
+#        class: DevLogBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

@@ -1,0 +1,86 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+<div class="content-inner">
+    <h2>Gestion des réseaux sociaux</h2>
+    <div class="well demi">
+        <h3>Nouveau réseau social</h3>
+        <div>
+            <form enctype="multipart/form-data" method="post" autocomplete="off">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="nom">Nom</label>
+                        </td>
+                        <td>
+                            <input type="text" id="nom" name="nom" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="url">URL</label>
+                        </td>
+                        <td>
+                            <input type="text" id="url" name="url" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="picto">Picto</label>
+                        </td>
+                        <td>
+                            <input type="text" id="picto" name="picto" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-primary">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    {% if socialNetwork|length != 0 %}
+        <div class="well">
+            <h3>Réseaux sociaux existants</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+                            <th>
+                                URL
+                            </th>
+                            <th>
+                                Picto
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for social in socialNetwork %}
+                            <tr>
+                                <td > {{ social.name }}</td>
+                                <td><a href="{{ social.url }}">{{ social.name }}</a></td>
+                                <td><i class="fa {{ social.picto }} w3-hover-opacity"></i></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

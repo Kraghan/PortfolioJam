@@ -1,0 +1,32 @@
+{
+  "fr": {
+    "home": "Accueil",
+    "about": "A propos",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "aboutMe": "A propos de moi",
+    "speciality": "Mes sp\u00e9cialit\u00e9s",
+    "project": "Mes projets",
+    "projectDescription": "Voici certains de mes derniers projets !",
+    "work": "O\u00f9 je travaille ",
+    "contactText": "Vous pouvez me contacter",
+    "sendMessage": "Envoyer un message",
+    "top": "Revenir au d\u00e9but",
+    "phone": "Téléphone"
+  },
+  "en": {
+    "home": "Home",
+    "about": "About",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "aboutMe": "About me",
+    "speciality": "My speciality",
+    "project": "My projects",
+    "projectDescription": "Here are some of my latest works !",
+    "work": "Where I work",
+    "contactText": "You can contact me",
+    "sendMessage": "Send a message",
+    "top": "To the top",
+    "phone": "Phone"
+  }
+}

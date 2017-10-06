@@ -1,0 +1,105 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+<div class="content-inner">
+    <h2>Gestion du contenu</h2>
+    <div class="well">
+        <div>
+            <form enctype="multipart/form-data" method="post" autocomplete="off">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="content1">Content 1</label>
+                        </td>
+                        <td>
+                            <textarea id="content1" name="content1">{{ content1 }}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="content2">Content 2</label>
+                        </td>
+                        <td>
+                            <textarea id="content2" name="content2">{{ content2 }}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">
+                            <label for="photo">Photo</label>
+                        </td>
+                        <td>
+                            {% if photoExist %}
+                                <img src="{{ asset("IMG/"~photo) }}" style="width:250px">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" id="photo" name="photo" {% if photoExist == false %} required {% endif %}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">
+                            <label for="background1">Background 1</label>
+                        </td>
+                        <td>
+                            {% if photoExist2 %}
+                                <img src="{{ asset("IMG/"~background1) }}" style="width:250px">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" id="background1" name="background1" {% if photoExist2 == false %} required {% endif %}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">
+                            <label for="background2">Background 2</label>
+                        </td>
+                        <td>
+                            {% if photoExist3 %}
+                                <img src="{{ asset("IMG/"~background2) }}" style="width:250px">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" id="background2" name="background2" {% if photoExist3 == false %} required {% endif %}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">
+                            <label for="background3">Background 3</label>
+                        </td>
+                        <td>
+                            {% if photoExist4 %}
+                                <img src="{{ asset("IMG/"~background3) }}" style="width:250px">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" id="background3" name="background3" {% if photoExist4 == false %} required {% endif %}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-primary">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    CKEDITOR.replace( 'content1' );
+    CKEDITOR.replace( 'content2' );
+{% endblock %}
