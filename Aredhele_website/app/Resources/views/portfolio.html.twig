@@ -201,96 +201,27 @@
             <ul id="filters">
                 <!--Portfolio Filters-->
                 <li><a href="#" data-filter="*" class="current">ALL</a></li>
-                <li><a href="#" data-filter=".photos">PHOTOS</a></li>
-                <li><a href="#" data-filter=".branding">BRANDING</a></li>
-                <li><a href="#" data-filter=".illustration">ILLUSTRATION</a></li>
+                {% for cat in categories %}
+                    <li><a href="#" data-filter=".{{ cat.name }}">{{ cat.name }}</a></li>
+                {% endfor %}
                 <!--Portfolio Filters-->
             </ul>
         </div>
         <div class="items">
             <ul class="row portfolio-items">
                 <!--Portfolio Items-->
-                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/1.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/1.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                {% for project in projects %}
+                    <li class="{% for cat in project.categories %}{{ cat }} {% endfor %} col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                        <div class="item">
+                            <img src="{{ asset("IMG/portfolio/thumb/"~project.thumb) }}" alt="{{ project.name }}">
+                            <div class="icons">
+                                <a href="{{ asset("IMG/portfolio/thumb/1.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                                <a href="{{ project.link }}" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                            </div>
+                            <div class="mask"></div>
                         </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="branding col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/2.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/2.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/3.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/3.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/4.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/4.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/5.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/5.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/6.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/6.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/7.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/7.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
-                    <div class="item">
-                        <img src="{{ asset("IMG/portfolio/thumb/8.jpg") }}" alt="">
-                        <div class="icons">
-                            <a href="{{ asset("IMG/portfolio/thumb/8.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
-                        </div>
-                        <div class="mask"></div>
-                    </div>
-                </li>
-
+                    </li>
+                {% endfor %}
                 <!--Portfolio Items-->
             </ul>
         </div>

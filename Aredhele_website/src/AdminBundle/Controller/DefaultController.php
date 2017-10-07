@@ -2,6 +2,9 @@
 
 namespace AdminBundle\Controller;
 
+use PortfolioBundle\Entity\Categorie;
+use PortfolioBundle\Entity\Project;
+use PortfolioBundle\Entity\ProjectCategoriesMm;
 use PortfolioBundle\Entity\Skills;
 use PortfolioBundle\Entity\SocialNetwork;
 use PortfolioBundle\Entity\WorkExperience;
@@ -426,6 +429,92 @@ class DefaultController extends Controller
         header('Content-disposition: attachment;filename='.$name);
         readfile($this->get('kernel')->getRootDir() . '\\..\\web\\'.$type.'\\'.$name);
         exit();
+    }
+
+    /**
+     * @Route("/projects", name="projects")
+     */
+    public function projectsAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if($request->isMethod("POST"))
+        {
+            $project = new Project();
+            $project->setName($request->get("nom"));
+            $project->setDescription($request->get("description"));
+
+            if($_FILES["thumb"]["name"] != "")
+            {
+                $uploadRes = $this->upload("thumb", str_replace(' ','_',$request->get("nom")));
+                if ($uploadRes["result"]) {
+                    $session->getFlashBag()->add('success', "Upload photo réussie !");
+                    $project->setThumb($uploadRes["filename"]);
+                } else
+                    $session->getFlashBag()->add('error', 'Upload photo error : ' . $uploadRes["message"]);
+            }
+
+            if($request->get("link"))
+                $project->setLink($request->get("link"));
+            if($request->get("video_link"))
+                $project->setVideoLink($request->get("video_link"));
+
+            $em->persist($project);
+            $em->flush();
+
+            foreach ($request->get("categorie") as $cat)
+            {
+                $mm = new ProjectCategoriesMm();
+                $mm->setProjectId($project->getId());
+                $mm->setCategoryId($cat);
+                $em->persist($mm);
+            }
+
+            $em->flush();
+        }
+
+        $categories = $em->getRepository("PortfolioBundle:Categorie")
+            ->findAll();
+
+        $projects = $em->getRepository("PortfolioBundle:Project")
+            ->findAll();
+
+        return $this->render('admin/admin_project.html.twig', ["projects" => $projects, "categories" => $categories]);
+    }
+
+    /**
+     * @Route("/categories", name="categories")
+     */
+    public function categorieAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if($request->isMethod("POST"))
+        {
+            $categorie = new Categorie();
+            $categorie->setName($request->get("nom"));
+            $categorie->setIsFilter($request->get("isFilter") == "on" ? true : false);
+
+            $em->persist($categorie);
+            $em->flush();
+        }
+
+        $categories = $em->getRepository("PortfolioBundle:Categorie")
+            ->findAll();
+
+        return $this->render('admin/admin_categorie.html.twig', ["categories" => $categories]);
     }
 
 

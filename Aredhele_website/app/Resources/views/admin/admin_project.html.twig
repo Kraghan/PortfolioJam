@@ -1,0 +1,129 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+    <div class="content-inner">
+        <h2>Gestion des projets</h2>
+        <div class="well demi">
+            <h3>Nouveau projet</h3>
+            <div>
+                <form enctype="multipart/form-data" method="post" autocomplete="off">
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="nom">Nom</label>
+                            </td>
+                            <td>
+                                <input type="text" id="nom" name="nom" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="description">Description</label>
+                            </td>
+                            <td>
+                                <textarea id="description" name="description" required>
+
+                                </textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="thumb">Thumbnail</label>
+                            </td>
+                            <td>
+                                <input type="file" id="thumb" name="thumb" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="video_link">Lien vidéo</label>
+                            </td>
+                            <td>
+                                <input type="text" id="video_link" name="video_link">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="link">Lien divers</label>
+                            </td>
+                            <td>
+                                <input type="text" id="link" name="link">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="link">Catégories</label>
+                            </td>
+                            <td>
+                                {% for categorie in categories %}
+                                    <label>{{ categorie.name }} <input type="checkbox" name="categorie[]" value="{{ categorie.id }}"></label>
+                                {% endfor %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% if projects|length != 0 %}
+            <div class="well">
+                <h3>Projets existants</h3>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Lien
+                            </th>
+                            <th>
+                                Lien vidéo
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for project in projects %}
+                            <tr>
+                                <td>{{ project.name }}</td>
+                                <td>{{ project.description }}%</td>
+                                <td>{{ project.link }}</td>
+                                <td>{{ project.videoLink }}</td>
+
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    CKEDITOR.replace( 'description' );
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+    <div class="content-inner">
+        <h2>Gestion des catégories</h2>
+        <div class="well demi">
+            <h3>Nouvelle catégorie</h3>
+            <div>
+                <form enctype="multipart/form-data" method="post" autocomplete="off">
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="nom">Nom</label>
+                            </td>
+                            <td>
+                                <input type="text" id="nom" name="nom" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="isFilter">Utiliser comme filtre ?</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" id="isFilter" name="isFilter">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% if categories|length != 0 %}
+            <div class="well">
+                <h3>Catégories existantes</h3>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+                            <th>
+                                Est un filtre
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>{% if category.isFilter %} Oui {% else %} Non {% endif %}</td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

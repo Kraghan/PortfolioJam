@@ -27,6 +27,29 @@ class PortfolioController extends Controller
         $workExperiences = $em->getRepository("PortfolioBundle:WorkExperience")
             ->findBy(array(), array('start' => 'DESC'));
 
+        $categories = $em->getRepository("PortfolioBundle:Categorie")
+            ->findBy(array("isFilter" => true), array("name" => "ASC"));
+
+        $projectsDB = $em->getRepository("PortfolioBundle:Project")
+            ->findAll();
+
+        $projects = [];
+
+        foreach ($projectsDB as $p)
+        {
+            $mm = $em->getRepository("PortfolioBundle:ProjectCategorieMm")
+                ->findBy(array("projectId" => $p->getId()));
+
+            $cat = [];
+
+            foreach ($mm as $m)
+                foreach ($categories as $c)
+                    if($m->getId() == $c->getId())
+                        $cat[] = $c->getName();
+
+            $projects[] = array("project" => $p, "categories" => $cat);
+        }
+
         $content = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt');
 
         $content2 = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt');
@@ -61,7 +84,9 @@ class PortfolioController extends Controller
             "latitude" => $gps["latitude"],
             "longitude" => $gps["longitude"],
             "lieu" => $gps["lieu"],
-            "downloadLinkCV" => $cvHash
+            "downloadLinkCV" => $cvHash,
+            "categories" => $categories,
+            "projects" => $projects
         ]);
     }
 
