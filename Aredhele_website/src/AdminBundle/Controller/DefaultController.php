@@ -157,6 +157,19 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
+        $availableSocialNetwork = [
+            "facebook",
+            "twitter",
+            "google",
+            "linkedin",
+            "instagram",
+            "youtube",
+            "vimeo",
+            "tumblr",
+            "dribbble",
+            "behance",
+            "flickr"];
+
         if($request->isMethod("POST"))
         {
             if($request->get("nom") && trim($request->get("nom")) != ""
@@ -180,7 +193,7 @@ class DefaultController extends Controller
         $socialNetwork = $em->getRepository("PortfolioBundle:SocialNetwork")
             ->findAll();
 
-        return $this->render('admin/admin_socialnetwork.html.twig', ["socialNetwork" => $socialNetwork]);
+        return $this->render('admin/admin_socialnetwork.html.twig', ["socialNetwork" => $socialNetwork, "availables" => $availableSocialNetwork]);
     }
 
     /**
@@ -280,22 +293,14 @@ class DefaultController extends Controller
         {
             if($request->get("nom") && trim($request->get("nom")) != "")
             {
-                $filename = trim($request->get("nom"));
+                $skill = new Skills();
+                $skill->setName($request->get("nom"));
+                $skill->setSkillProgress($request->get("pourcentage"));
+                $skill->setDescription($request->get("description"));
+                $em->persist($skill);
+                $em->flush();
 
-                $res = $this->upload("picto",$filename);
-                if($res["result"])
-                {
-                    $skill = new Skills();
-                    $skill->setName($request->get("nom"));
-                    $skill->setSkillProgress($request->get("pourcentage"));
-                    $skill->setPicto($res["filename"]);
-                    $em->persist($skill);
-                    $em->flush();
-
-                    $session->getFlashBag()->add('success', "Ajout de la compétence réussie !");
-                }
-                else
-                    $session->getFlashBag()->add('error', "Echec de l'upload : ".$res["message"]);
+                $session->getFlashBag()->add('success', "Ajout de la compétence réussie !");
             }
             else
                 $session->getFlashBag()->add('error', "Echec de l'ajout");

@@ -91,7 +91,7 @@
 <section class="hero firstSec section colored" id="home">
     <div class="container">
         <div class="col-xs-6 col-md-4 profilePic">
-            <img src="{{ asset("IMG/me.jpg") }}" alt="" class="img-circle">
+            <img src="{{ asset("IMG/"~photo) }}" alt="" class="img-circle">
         </div>
         <div class="heading">
             <h1>JOHN DOE</h1>
@@ -107,10 +107,10 @@
         <div class="divider"></div>
         <div class="heading">
             <h2>HERE'S WHAT I'M DOING</h2>
-            <p>I introduce the most creative and original ideas for my customers </p>
+            {{ content | raw }}
         </div>
         <div class="">
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi</p>
+            {{ content2 | raw}}
         </div>
         <div class="services-inner hidethis">
             <!--Service Items-->
@@ -354,18 +354,6 @@
                     </a>
                 </li>
             {% endfor %}
-            <!-- <li><a target="_blank" class="facebook" href="http://www.facebook.com/"></a></li>
-            <li><a target="_blank" class="twitter" href="http://www.twitter.com/"></a></li>
-            <li><a target="_blank" class="google" href="https://plus.google.com/"></a></li>
-            <li><a target="_blank" class="linkedin" href="http://www.linkedin.com/"></a></li>
-            <li><a target="_blank" class="instagram" href="http://www.instagram.com/"></a></li>
-            <li><a target="_blank" class="youtube" href="https://www.youtube.com/"></a></li>
-            <li><a target="_blank" class="vimeo" href="http://www.vimeo.com/"></a></li>
-            <li><a target="_blank" class="tumblr" href="http://www.tumblr.com/"></a></li>
-            <li><a target="_blank" class="dribbble" href="http://www.dribbble.com/"></a></li>
-            <li><a target="_blank" class="behance" href="https://www.behance.net/"></a></li>
-            <li><a target="_blank" class="flickr" href="https://www.flickr.com/"></a></li>
-            -->
         </ul>
     </div>
 </footer>

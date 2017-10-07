@@ -38,9 +38,9 @@ class Skills
     /**
      * @var string
      *
-     * @ORM\Column(name="picto", type="string", length=255)
+     * @ORM\Column(name="description", type="string", length=255)
      */
-    private $picto;
+    private $description;
 
 
     /**
@@ -102,27 +102,27 @@ class Skills
     }
 
     /**
-     * Set picto
+     * Set description
      *
-     * @param string $picto
+     * @param string $description
      *
      * @return Skills
      */
-    public function setPicto($picto)
+    public function setDescription($description)
     {
-        $this->picto = $picto;
+        $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get picto
+     * Get description
      *
      * @return string
      */
-    public function getPicto()
+    public function getDescription()
     {
-        return $this->picto;
+        return $this->description;
     }
 }
 

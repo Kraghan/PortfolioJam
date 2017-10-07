@@ -40,9 +40,15 @@ class PortfolioController extends Controller
         // replace this example code with whatever you need
         return $this->render('portfolio.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            "socialNetworks" => $socialNetworks, "skills" => $skills, "content" => $content, "content2" => $content2,
-            "trad" => $dataTrad, "background1" => $filenamebackground1, "background2" => $filenamebackground2,
-            "background3" => $filenamebackground3, "photo" => $filenamephoto
+            "socialNetworks" => $socialNetworks,
+            "skills" => $skills,
+            "content" => $content,
+            "content2" => $content2,
+            "trad" => $dataTrad,
+            "background1" => $filenamebackground1,
+            "background2" => $filenamebackground2,
+            "background3" => $filenamebackground3,
+            "photo" => $filenamephoto
         ]);
     }
 

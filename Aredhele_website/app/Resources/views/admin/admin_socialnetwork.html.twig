@@ -30,7 +30,11 @@
                             <label for="picto">Picto</label>
                         </td>
                         <td>
-                            <input type="text" id="picto" name="picto" required>
+                            <select name="picto">
+                                {% for available in availables %}
+                                    <option value="{{ available }}">{{ available | capitalize }}</option>
+                                {% endfor %}
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -58,9 +62,6 @@
                                 URL
                             </th>
                             <th>
-                                Picto
-                            </th>
-                            <th>
                                 Actions
                             </th>
                         </tr>
@@ -70,7 +71,6 @@
                             <tr>
                                 <td > {{ social.name }}</td>
                                 <td><a href="{{ social.url }}">{{ social.name }}</a></td>
-                                <td><i class="fa {{ social.picto }} w3-hover-opacity"></i></td>
                                 <td></td>
                             </tr>
                         {% endfor %}
