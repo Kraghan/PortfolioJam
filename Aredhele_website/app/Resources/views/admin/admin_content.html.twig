@@ -26,6 +26,21 @@
                     </tr>
                     <tr>
                         <td rowspan="2">
+                            <label for="cv">CV</label>
+                        </td>
+                        <td>
+                            {% if cvExist %}
+                                <a href="{{ url('downloadFile', { 'type': 'TXT', 'name': "cv.pdf", 'hash' : downloadLinkCV }) }}">Télécharger</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" id="cv" name="cv" {% if cvExist == false %} required {% endif %}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">
                             <label for="photo">Photo</label>
                         </td>
                         <td>
@@ -84,6 +99,37 @@
                             <input type="file" id="background3" name="background3" {% if photoExist4 == false %} required {% endif %}>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>
+                            <label for="latitude">Latitude</label>
+                        </td>
+
+                        <td>
+                            <input type="text" id="latitude" name="latitude" value="{{ latitude }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="longitude">Longitude</label>
+                        </td>
+
+                        <td>
+                            <input type="text" id="longitude" name="longitude" value="{{ longitude }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="lieu">Nom lieu</label>
+                        </td>
+
+                        <td>
+                            <textarea id="lieu" name="lieu" required>
+                                {{ lieu }}
+                            </textarea>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                         </td>
@@ -100,6 +146,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    CKEDITOR.replace( 'content1' );
-    CKEDITOR.replace( 'content2' );
+    <script>
+        CKEDITOR.replace( 'content1' );
+        CKEDITOR.replace( 'content2' );
+    </script>
 {% endblock %}

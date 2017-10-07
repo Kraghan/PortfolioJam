@@ -30,7 +30,7 @@
                             <label for="picto">Picto</label>
                         </td>
                         <td>
-                            <select name="picto">
+                            <select id="picto" name="picto">
                                 {% for available in availables %}
                                     <option value="{{ available }}">{{ available | capitalize }}</option>
                                 {% endfor %}

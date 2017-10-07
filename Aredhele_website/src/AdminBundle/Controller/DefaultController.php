@@ -4,6 +4,7 @@ namespace AdminBundle\Controller;
 
 use PortfolioBundle\Entity\Skills;
 use PortfolioBundle\Entity\SocialNetwork;
+use PortfolioBundle\Entity\WorkExperience;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -211,16 +212,33 @@ class DefaultController extends Controller
         $background1 = "background1";
         $background2 = "background2";
         $background3 = "background3";
+        $cv = "cv";
 
         if(!file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt'))
             touch($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt');
         if(!file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt'))
             touch($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt');
+        if(!file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json'))
+        {
+            touch($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json');
+            $gps = ["longitude" => 0.0,
+                "latitude" => 0.0,
+                "lieu" => "Santa House"];
+            file_put_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json',json_encode($gps));
+        }
+        else
+            $gps = json_decode(file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json'),true);
 
         if($request->isMethod("POST"))
         {
             file_put_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt',$request->get("content1"));
             file_put_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt',$request->get("content2"));
+
+            $gps = ["longitude" => $request->get('longitude'),
+                "latitude" => $request->get('latitude'),
+                "lieu" => $request->get('lieu')];
+
+            file_put_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json',json_encode($gps));
 
             $session->getFlashBag()->add('success', "Modification du contenu réussie !");
 
@@ -256,6 +274,14 @@ class DefaultController extends Controller
                 } else
                     $session->getFlashBag()->add('error', 'Upload background3 error : ' . $uploadRes["message"]);
             }
+            if($_FILES["cv"]["name"] != "")
+            {
+                $uploadRes = $this->upload("cv", $cv, $this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\', ["application/pdf"]);
+                if ($uploadRes["result"]) {
+                    $session->getFlashBag()->add('success', "Upload CV réussie !");
+                } else
+                    $session->getFlashBag()->add('error', 'Upload CV error : ' . $uploadRes["message"]);
+            }
 
         }
 
@@ -263,17 +289,34 @@ class DefaultController extends Controller
         $filenamebackground1 = "background1".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$background1);
         $filenamebackground2 = "background2".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$background2);
         $filenamebackground3 = "background3".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$background3);
+        $filenamecv = "cv.pdf";
         $content1 = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt');
         $content2 = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt');
         $photoExist = file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$filenamephoto);
         $photoExist2 = file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$filenamebackground1);
         $photoExist3 = file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$filenamebackground2);
         $photoExist4 = file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\'.$filenamebackground3);
+        $cvExist = file_exists($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\'.$filenamecv);
+
+        $date = new \DateTime();
+        $cvHash = sha1($date->format("Y-m-d")."TXTcv.pdf");
 
         return $this->render('admin/admin_content.html.twig', ["content1" => $content1,
-            "content2" => $content2, "photo" => $filenamephoto, "photoExist" => $photoExist,
-            "photoExist2" => $photoExist2, "photoExist3" => $photoExist3, "photoExist4" => $photoExist4,
-            "background1" => $filenamebackground1, "background2" => $filenamebackground2, "background3" => $filenamebackground3]);
+            "content2" => $content2,
+            "photo" => $filenamephoto,
+            "photoExist" => $photoExist,
+            "photoExist2" => $photoExist2,
+            "photoExist3" => $photoExist3,
+            "photoExist4" => $photoExist4,
+            "cvExist" => $cvExist,
+            "background1" => $filenamebackground1,
+            "background2" => $filenamebackground2,
+            "background3" => $filenamebackground3,
+            "cv" => $cv,
+            "latitude" => $gps["latitude"],
+            "longitude" => $gps["longitude"],
+            "lieu" => $gps["lieu"],
+            "downloadLinkCV" => $cvHash]);
     }
 
     /**
@@ -310,6 +353,79 @@ class DefaultController extends Controller
             ->findAll();
 
         return $this->render('admin/admin_skills.html.twig', ["skills" => $skills]);
+    }
+
+    /**
+     * @Route("/workExperience", name="admin_workExperience")
+     */
+    public function workExperienceAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if($request->isMethod("POST"))
+        {
+            $experience = new WorkExperience();
+            $experience->setCompany($request->get("company"));
+            $experience->setPoste($request->get("poste"));
+            $experience->setStart(new \DateTime($request->get("start")));
+            if($request->get("end"))
+                $experience->setEnd(new \DateTime($request->get("end")));
+            $em->persist($experience);
+            $em->flush();
+        }
+
+        $workExperiences = $em->getRepository("PortfolioBundle:WorkExperience")
+            ->findAll();
+
+        return $this->render('admin/admin_workExperience.html.twig', ["workExperiences" => $workExperiences]);
+    }
+
+    /**
+     * @Route("/downloadFile/{hash}/{type}/{name}", name="downloadFile")
+     */
+    public function downloadFileAction($hash, $type, $name)
+    {
+        $date = new \DateTime();
+
+        $hashBis = sha1($date->format("Y-m-d").$type.$name);
+
+        if($hashBis != $hash)
+            return $this->redirectToRoute('');
+
+        $explode = explode(".",strtolower($name));
+        $mime = "";
+        switch($explode[count($explode)-1])
+        {
+            case 'jpg':
+                $mime = "image/jpg";
+                break;
+            case 'png':
+                $mime = "image/png";
+                break;
+            case 'jpeg':
+                $mime = "image/jpeg";
+                break;
+            case 'gif':
+                $mime = "image/gif";
+                break;
+            case 'zip':
+                $mime = "application/zip";
+                break;
+            case 'pdf':
+                $mime = "application/pdf";
+                break;
+        }
+
+        header('Content-Type: '.$mime);
+        header('Content-disposition: attachment;filename='.$name);
+        readfile($this->get('kernel')->getRootDir() . '\\..\\web\\'.$type.'\\'.$name);
+        exit();
     }
 
 
@@ -364,6 +480,14 @@ class DefaultController extends Controller
                         "message" => "Mauvais type de fichier ! "
                     ];
                 $extension = ".zip";
+                break;
+            case 'pdf':
+                if (!in_array("application/pdf", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".pdf";
                 break;
             default:
                 return [

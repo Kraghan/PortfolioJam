@@ -94,9 +94,9 @@
             <img src="{{ asset("IMG/"~photo) }}" alt="" class="img-circle">
         </div>
         <div class="heading">
-            <h1>JOHN DOE</h1>
-            <h3>Sr. Art Director - Photographer - Jr. Developer</h3>
-            <a href="" class="borderBtn">DOWNLOAD RESUME</a>
+            <h1>VINCENT CALISTO</h1>
+            <h3>Jr. Game Programmer</h3>
+            <a href="{{ url('downloadFile', { 'type': 'TXT', 'name': "cv.pdf", 'hash' : downloadLinkCV }) }}" class="borderBtn">DOWNLOAD RESUME</a>
         </div>
     </div>
 </section>
@@ -150,7 +150,7 @@
                         <span class="percent"></span>
                     </span>
                     <h4>{{ skill.name }}</h4>
-                    <p>Lorem ipsum dolor sit amet</p>
+                    <p>{{ skill.description }}</p>
                 </div>
             {% endfor %}
 
@@ -170,42 +170,19 @@
             <div class="timeline">
                 <ul>
                     <!--Experience Items-->
-                    <li class="animated">
-                        <div class="point"></div>
-                        <div class="bubble">
-                            <div class="bubble-arrow"></div>
-                            <p class="date">July 2012 - Present</p>
-                            <p class="name">Company A</p>
-                            <p class="title">Senior UX Designer</p>
-                        </div>
-                    </li>
-                    <li class="animated odd">
-                        <div class="point"></div>
-                        <div class="bubble">
-                            <div class="bubble-arrow"></div>
-                            <p class="date">Mar. 2010 - July 2012</p>
-                            <p class="name">Company B</p>
-                            <p class="title">Front-end Developer</p>
-                        </div>
-                    </li>
-                    <li class="animated">
-                        <div class="point"></div>
-                        <div class="bubble">
-                            <div class="bubble-arrow"></div>
-                            <p class="date">Feb. 2005 - Dec. 2007</p>
-                            <p class="name">An Agency</p>
-                            <p class="title">Jr. Art Director</p>
-                        </div>
-                    </li>
-                    <li class="animated odd">
-                        <div class="point"></div>
-                        <div class="bubble">
-                            <div class="bubble-arrow"></div>
-                            <p class="date">11/04/13</p>
-                            <p class="name">Company C</p>
-                            <p class="title">Jr. Front-end Developer</p>
-                        </div>
-                    </li>
+                    {% for workExperience in workExperiences %}
+                        <li class="animated {% if loop.index is even %}odd{% endif %}">
+                            <div class="point"></div>
+                            <div class="bubble">
+                                <div class="bubble-arrow"></div>
+                                <p class="date">
+                                    {{ workExperience.start | date("F Y") }} - {% if workExperience.end is null %}present{% else %}{{ workExperience.end | date("F Y") }}{% endif %}
+                                </p>
+                                <p class="name">{{ workExperience.company }}</p>
+                                <p class="title">{{ workExperience.poste }}</p>
+                            </div>
+                        </li>
+                    {% endfor %}
                     <!--Experience Items-->
                 </ul>
             </div>
@@ -313,6 +290,7 @@
                         <div class="mask"></div>
                     </div>
                 </li>
+
                 <!--Portfolio Items-->
             </ul>
         </div>
@@ -346,7 +324,7 @@
 <!--Footer Section-->
 <footer class="section">
     <div class="container">
-        <p>&copy; 2014 website.com. All Rights Reserved.</p>
+        <p>&copy; 2017 A Kraghan website. All Rights Reserved.</p>
         <ul>
             {% for socialNetwork in socialNetworks %}
                 <li>
@@ -357,6 +335,9 @@
         </ul>
     </div>
 </footer>
+<input type="hidden" value="{{ latitude }}" id="gps_lat">
+<input type="hidden" value="{{ longitude }}" id="gps_long">
+<input type="hidden" value="{{ lieu }}" id="gps_lieu">
 <!--Footer Section-->
 <!--Scripts-->
 <script src="{{ asset("JS/jquery.easing.1.3.js") }}" type="text/javascript"></script>

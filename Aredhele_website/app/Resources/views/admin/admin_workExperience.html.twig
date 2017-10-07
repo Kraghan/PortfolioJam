@@ -1,0 +1,114 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+    <div class="content-inner">
+        <h2>Gestion des expériences</h2>
+        <div class="well demi">
+            <h3>Nouvelle expérience</h3>
+            <div>
+                <form enctype="multipart/form-data" method="post" autocomplete="off">
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="company">Entreprise</label>
+                            </td>
+                            <td>
+                                <input type="text" id="company" name="company" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="poste">Poste</label>
+                            </td>
+                            <td>
+                                <input type="text" id="poste" name="poste" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="start">Date de début</label>
+                            </td>
+                            <td>
+                                <input type="text" id="start" name="start" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="end">Date de fin (vide si en cours)</label>
+                            </td>
+                            <td>
+                                <input type="text" id="end" name="end">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% if workExperiences|length != 0 %}
+            <div class="well">
+                <h3>Expériences existantes</h3>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                Entreprise
+                            </th>
+                            <th>
+                                Poste
+                            </th>
+                            <th>
+                                Date de début
+                            </th>
+                            <th>
+                                Date de fin
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for workExperience in workExperiences %}
+                            <tr>
+                                <td> {{ workExperience.company }}</td>
+                                <td> {{ workExperience.poste }}</td>
+                                <td> {{ workExperience.start | date("d/m/Y") }}</td>
+                                <td>
+                                    {% if workExperience.end is null %}
+                                        Aujourd'hui
+                                    {% else %}
+                                        {{ workExperience.end | date("d/m/Y") }}
+                                    {% endif %}
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(
+            function()
+            {
+                $( "#start" ).datepicker();
+                $( "#end" ).datepicker();
+            }
+        )
+    </script>
+{% endblock %}

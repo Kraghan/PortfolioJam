@@ -24,11 +24,16 @@ class PortfolioController extends Controller
         $skills = $em->getRepository("PortfolioBundle:Skills")
             ->findAll();
 
+        $workExperiences = $em->getRepository("PortfolioBundle:WorkExperience")
+            ->findBy(array(), array('start' => 'DESC'));
+
         $content = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content1.txt');
 
         $content2 = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt');
 
         $dataTrad = json_decode(file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\trads.json'),true);
+
+        $gps = json_decode(file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json'),true);
 
         $dataTrad = $dataTrad[$lang];
 
@@ -37,18 +42,26 @@ class PortfolioController extends Controller
         $filenamebackground2 = "background2".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\background2');
         $filenamebackground3 = "background3".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\background3');
 
+        $date = new \DateTime();
+        $cvHash = sha1($date->format("Y-m-d")."TXTcv.pdf");
+
         // replace this example code with whatever you need
         return $this->render('portfolio.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
             "socialNetworks" => $socialNetworks,
             "skills" => $skills,
+            "workExperiences" => $workExperiences,
             "content" => $content,
             "content2" => $content2,
             "trad" => $dataTrad,
             "background1" => $filenamebackground1,
             "background2" => $filenamebackground2,
             "background3" => $filenamebackground3,
-            "photo" => $filenamephoto
+            "photo" => $filenamephoto,
+            "latitude" => $gps["latitude"],
+            "longitude" => $gps["longitude"],
+            "lieu" => $gps["lieu"],
+            "downloadLinkCV" => $cvHash
         ]);
     }
 
