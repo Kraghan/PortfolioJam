@@ -1,340 +1,387 @@
-<!-- <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html>
-<title>W3.CSS Template</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="{{ asset("CSS/style.css") }}">
-<style>
-    .bgimg-1 {
-        background-image: url('/IMG/{{ background1}}');
-    }
-    .bgimg-2 {
-        background-image: url('/IMG/{{ background2}}');
-    }
-    .bgimg-3 {
-        background-image: url('/IMG/{{ background3}}');
-    }
-</style>
-<body>
+<head>
+    <title>One - Flat Theme</title>
+    <!--Metatags-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale = 1, maximum-scale = 1, user-scalable = no, width = device-width" />
+    <!--Metatags-->
 
-<!-- Navbar (sit on top) -->
-<div class="w3-top">
-    <div class="w3-bar" id="myNavbar">
-        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
-            <i class="fa fa-bars"></i>
-        </a>
-        <a href="#home" class="w3-bar-item w3-button">{{ trad.home }}</a>
-        <a href="#about" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> {{ trad.about }}</a>
-        <a href="#portfolio" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> {{ trad.portfolio }}</a>
-        <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> {{ trad.contact }}</a>
-        <!-- <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-red">
-            <i class="fa fa-search"></i>
-        </a> -->
-    </div>
+    <link rel="shortcut icon" href="favicon.png" />
+    <!--Styles-->
+    <link href="{{ asset("CSS/reset.css") }}" rel="stylesheet" type="text/css" />
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <link href="{{ asset("CSS/bootstrap.min.css") }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset("CSS/jquery.fs.boxer.css") }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset("CSS/owl.carousel.css") }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset("CSS/style.css") }}" rel="stylesheet" type="text/css" />
+    <!--Styles-->
 
-    <!-- Navbar on small screens -->
-    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
-        <a href="#about" class="w3-bar-item w3-button" onclick="toggleFunction()">{{ trad.about }}</a>
-        <a href="#portfolio" class="w3-bar-item w3-button" onclick="toggleFunction()">{{ trad.portfolio }}</a>
-        <a href="#contact" class="w3-bar-item w3-button" onclick="toggleFunction()">{{ trad.contact }}</a>
-        <!-- <a href="#" class="w3-bar-item w3-button">SEARCH</a> -->
-    </div>
+    <!--Scripts-->
+    <script src="{{ asset("JS/jquery-1.9.1.min.js") }}" type="text/javascript"></script>
+    <script src="{{ asset("JS/modernizr-2.6.2.min.js") }}" type="text/javascript"></script>
+    <!--Scripts-->
+    <!--[if lt IE 9]>
+    <script src="{{ asset("JS/html5.js") }}"></script>
+    <![endif]-->
+    <!--[if IE]>
+    <style>
+        .timeline li{display:block; -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=100)"; filter: alpha(opacity=100); opacity: 1;}
+    </style>
+    <![endif]-->
+</head>
+<body data-spy="scroll" data-target=".navbar-flat" data-offset="55">
+<div class="loader">
+    <div class="inner"></div>
 </div>
-
-<!-- First Parallax Image with Logo Text -->
-<div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
-    <div class="w3-display-middle" style="white-space:nowrap;">
-        <span class="w3-center w3-padding-large w3-blue-grey w3-xlarge w3-wide w3-animate-opacity">MY <span class="w3-hide-small">WEBSITE</span> LOGO</span>
-    </div>
-</div>
-
-<!-- Container (About Section) -->
-<div class="w3-content w3-container w3-padding-64" id="about">
-    <h3 class="w3-center">{{ trad.aboutMe }}</h3>
-    <p class="w3-center"><em>I love photography</em></p>
-    {{ content | raw }}
-    <div class="w3-row">
-        <div class="w3-col m6 w3-center w3-padding-large">
-            <p><b><i class="fa fa-user w3-margin-right"></i>Jordan "Kraghan" BAS</b></p><br>
-            <img src="{{ asset("IMG/"~photo) }}" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me" width="500" height="333">
+<!--Welcome Section-->
+<section id="welcome">
+    <div id="slides">
+        <div class="overlay"></div>
+        <div class="slides-container">
+            <!--Slides-->
+            <img src="{{ asset("IMG/{{ background1}}") }}" alt="1">
+            <img src="{{ asset("IMG/{{ background2}}") }}" alt="2">
+            <img src="{{ asset("IMG/{{ background3}}") }}" alt="3">
+            <!--Slides-->
         </div>
-
-        <!-- Hide this text on small devices -->
-        <div class="w3-col m6 w3-hide-small w3-padding-large">
-            {{ content2 | raw }}
-        </div>
-    </div>
-    <h3 class="w3-center">{{ trad.speciality }}</h3>
-
-    {% for skill in skills %}
-        <div class="w3-wide">
-            <img src="{{ asset("IMG/"~skill.picto) }}" class="picto">
-            <p class="bloc">
-                {{ skill.name }}
-            </p>
-        </div>
-        <div class="w3-light-grey">
-            <div class="w3-container w3-padding-small w3-blue-grey w3-center" style="width:{{ skill.skillProgress }}%">{{ skill.skillProgress }}%</div>
-        </div>
-    {% endfor %}
-    <!-- <p class="w3-wide"><i class="fa fa-laptop"></i>Web Design</p>
-    <div class="w3-light-grey">
-        <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div>
-    </div>
-    <p class="w3-wide"><i class="fa fa-photo"></i>Photoshop</p>
-    <div class="w3-light-grey">
-        <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div>
-    </div>-->
-</div>
-
-<!--<div class="w3-row w3-center w3-dark-grey w3-padding-16">
-    <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">14+</span><br>
-        Partners
-    </div>
-    <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">55+</span><br>
-        Projects Done
-    </div>
-    <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">89+</span><br>
-        Happy Clients
-    </div>
-    <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">150+</span><br>
-        Meetings
-    </div>
-</div>-->
-
-<!-- Second Parallax Image with Portfolio Text -->
-<div class="bgimg-2 w3-display-container w3-opacity-min">
-    <div class="w3-display-middle">
-        <h2 class="w3-xxlarge w3-text-white w3-wide">{{ trad.portfolio }}</h2>
-    </div>
-</div>
-
-<!-- Container (Portfolio Section) -->
-<div class="w3-content w3-container w3-padding-64" id="portfolio">
-    <h3 class="w3-center">{{ trad.project }}</h3>
-    <p class="w3-center"><em>{{ trad.projectDescription }}<br> Click on the images to make them bigger</em></p><br>
-
-    <!-- Responsive Grid. Four columns on tablets, laptops and desktops. Will stack on mobile devices/small screens (100% width) -->
-    <div class="w3-row-padding w3-center">
-        <div class="w3-col m3">
-            <img src="/w3images/p1.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="The mist over the mountains">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p2.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Coffee beans">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p3.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Bear closeup">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p4.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Quiet ocean">
-        </div>
-    </div>
-
-    <div class="w3-row-padding w3-center w3-section">
-        <div class="w3-col m3">
-            <img src="/w3images/p5.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="The mist">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p6.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="My beloved typewriter">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p7.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Empty ghost train">
-        </div>
-
-        <div class="w3-col m3">
-            <img src="/w3images/p8.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Sailing">
-        </div>
-        <button class="w3-button w3-padding-large w3-light-grey" style="margin-top:64px">LOAD MORE</button>
-    </div>
-</div>
-
-<!-- Modal for full size images on click-->
-<!--<div id="modal01" class="w3-modal w3-black" onclick="this.style.display='none'">
-    <span class="w3-button w3-large w3-black w3-display-topright" title="Close Modal Image"><i class="fa fa-remove"></i></span>
-    <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-        <img id="img01" class="w3-image">
-        <p id="caption" class="w3-opacity w3-large"></p>
-    </div>
-</div>-->
-
-<!-- Third Parallax Image with Portfolio Text -->
-<div class="bgimg-3 w3-display-container w3-opacity-min">
-    <div class="w3-display-middle">
-        <h2 class="w3-xxlarge w3-text-white w3-wide">{{ trad.contact }}</h2>
-    </div>
-</div>
-
-<!-- Container (Contact Section) -->
-<div class="w3-content w3-container w3-padding-64" id="contact">
-    <h3 class="w3-center">{{ trad.work }}</h3>
-
-    <div class="w3-row w3-padding-32 w3-section">
-        <div class="w3-col m4 w3-container">
-            <!-- Add Google Maps -->
-            <!-- <div id="googleMap" class="w3-round-large w3-greyscale" style="width:100%;height:400px;"></div> -->
-        </div>
-        <div class="w3-col m8 w3-panel">
-            <div class="w3-large w3-margin-bottom">
-                <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Châtillon le Duc, France<br>
-                <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> {{ trad.phone }}: +33 634433432<br>
-                <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: jdr.bas@gmail.com<br>
+        <nav class="slides-navigation">
+            <a href="#" class="next"></a>
+            <a href="#" class="prev"></a>
+        </nav>
+        <div class="welcome-message">
+            <div class="heading">
+                <p>HI, I'M JOHN DOE</p>
+                <p class="small">Art Director from Istanbul</p>
             </div>
-            <p></p>
-            <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
-                <div class="w3-half">
-                    <input id="name" class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
-                </div>
-                <div class="w3-half">
-                    <input id="email" class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
-                </div>
-            </div>
-            <textarea id="message" class="w3-input w3-border" type="text" placeholder="Message" required name="Message"></textarea>
-            <button id="submit" class="w3-button w3-black w3-right w3-section" type="submit">
-                <i class="fa fa-paper-plane"></i> {{ trad.sendMessage }}
+            <a href="#home" class="borderBtn scrollto">MORE ABOUT ME</a>
+        </div>
+    </div>
+</section>
+<!--Welcome Section-->
+<!--Navbar Section-->
+<div class="navbar navbar-flat">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
-            <p id="result_message"></p>
+            <a href="#" class="navbar-brand">MENU</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <nav>
+                <ul class="nav navbar-nav">
+                    <!--Nav Menu-->
+                    <li class="active"><a href="#welcome" class="scrollto">HOME</a></li>
+                    <li><a href="#about" class="scrollto">ABOUT</a></li>
+                    <li><a href="#skills" class="scrollto">SKILLS</a></li>
+                    <li><a href="#experience" class="scrollto">EXPERIENCE</a></li>
+                    <li><a href="#portfolio" class="scrollto">PORTFOLIO</a></li>
+                    <li><a href="#contact" class="scrollto">CONTACT</a></li>
+                    <!--Nav Menu-->
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
-
-<!-- Footer -->
-<footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
-    <a href="#home" class="w3-button w3-light-grey"><i class="fa fa-arrow-up w3-margin-right"></i>{{ trad.top }}</a>
-    <div class="w3-xlarge w3-section">
-        {% for socialNetwork in socialNetworks %}
-            <a href="{{ socialNetwork.url }}">
-                <i class="fa {{ socialNetwork.picto }} w3-hover-opacity"></i>
-            </a>
-        {% endfor %}
+<!--Navbar Section-->
+<!--Home Section-->
+<section class="hero firstSec section colored" id="home">
+    <div class="container">
+        <div class="col-xs-6 col-md-4 profilePic">
+            <img src="{{ asset("IMG/me.jpg") }}" alt="" class="img-circle">
+        </div>
+        <div class="heading">
+            <h1>JOHN DOE</h1>
+            <h3>Sr. Art Director - Photographer - Jr. Developer</h3>
+            <a href="" class="borderBtn">DOWNLOAD RESUME</a>
+        </div>
     </div>
-    <!-- <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>-- a> -->
+</section>
+<!--Home Section-->
+<!--Services Section-->
+<section class="services section" id="about">
+    <div class="container">
+        <div class="divider"></div>
+        <div class="heading">
+            <h2>HERE'S WHAT I'M DOING</h2>
+            <p>I introduce the most creative and original ideas for my customers </p>
+        </div>
+        <div class="">
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi</p>
+        </div>
+        <div class="services-inner hidethis">
+            <!--Service Items-->
+            <div class="service col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <p class="icon"><i class="heart"></i></p>
+                <h3>UI/UX DESIGN</h3>
+            </div>
+            <div class="service col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <p class="icon"><i class="coding"></i></p>
+                <h3>DEVELOPMENT</h3>
+            </div>
+            <div class="service col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <p class="icon"><i class="camera"></i></p>
+                <h3>PHOTOGRAPH</h3>
+            </div>
+            <div class="service col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <p class="icon"><i class="music"></i></p>
+                <h3>MUSIC</h3>
+            </div>
+            <!--Service Items-->
+        </div>
+    </div>
+</section>
+<!--Services Section-->
+<!--Skills Section-->
+<section class="skills section colored" id="skills">
+    <div class="container">
+        <div class="divider"></div>
+        <div class="heading">
+            <h2>TECHNICAL SKILLS</h2>
+        </div>
+        <div id="skills-slide">
+            <!--Skills Items-->
+            {% for skill in skills %}
+                <div class="skill">
+                    <span class="chart" data-percent="{{ skill.skillProgress }}">
+                        <span class="percent"></span>
+                    </span>
+                    <h4>{{ skill.name }}</h4>
+                    <p>Lorem ipsum dolor sit amet</p>
+                </div>
+            {% endfor %}
+
+            <!--Skills Items-->
+        </div>
+    </div>
+</section>
+<!--Services Section-->
+<!--Experience Section-->
+<section class="experience section" id="experience">
+    <div class="container">
+        <div class="divider"></div>
+        <div class="heading">
+            <h2>WORK EXPERIENCE</h2>
+        </div>
+        <div class="row">
+            <div class="timeline">
+                <ul>
+                    <!--Experience Items-->
+                    <li class="animated">
+                        <div class="point"></div>
+                        <div class="bubble">
+                            <div class="bubble-arrow"></div>
+                            <p class="date">July 2012 - Present</p>
+                            <p class="name">Company A</p>
+                            <p class="title">Senior UX Designer</p>
+                        </div>
+                    </li>
+                    <li class="animated odd">
+                        <div class="point"></div>
+                        <div class="bubble">
+                            <div class="bubble-arrow"></div>
+                            <p class="date">Mar. 2010 - July 2012</p>
+                            <p class="name">Company B</p>
+                            <p class="title">Front-end Developer</p>
+                        </div>
+                    </li>
+                    <li class="animated">
+                        <div class="point"></div>
+                        <div class="bubble">
+                            <div class="bubble-arrow"></div>
+                            <p class="date">Feb. 2005 - Dec. 2007</p>
+                            <p class="name">An Agency</p>
+                            <p class="title">Jr. Art Director</p>
+                        </div>
+                    </li>
+                    <li class="animated odd">
+                        <div class="point"></div>
+                        <div class="bubble">
+                            <div class="bubble-arrow"></div>
+                            <p class="date">11/04/13</p>
+                            <p class="name">Company C</p>
+                            <p class="title">Jr. Front-end Developer</p>
+                        </div>
+                    </li>
+                    <!--Experience Items-->
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Experience Section-->
+<!--Portfolio Section-->
+<section class="portfolio section" id="portfolio">
+    <div class="container">
+        <div class="divider"></div>
+        <div class="heading">
+            <h2>PORTFOLIO</h2>
+        </div>
+        <div class="filter row">
+            <ul id="filters">
+                <!--Portfolio Filters-->
+                <li><a href="#" data-filter="*" class="current">ALL</a></li>
+                <li><a href="#" data-filter=".photos">PHOTOS</a></li>
+                <li><a href="#" data-filter=".branding">BRANDING</a></li>
+                <li><a href="#" data-filter=".illustration">ILLUSTRATION</a></li>
+                <!--Portfolio Filters-->
+            </ul>
+        </div>
+        <div class="items">
+            <ul class="row portfolio-items">
+                <!--Portfolio Items-->
+                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/1.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/1.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="branding col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/2.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/2.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/3.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/3.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/4.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/4.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="illustration col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/5.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/5.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/6.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/6.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/7.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/7.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <li class="photos col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <div class="item">
+                        <img src="{{ asset("IMG/portfolio/thumb/8.jpg") }}" alt="">
+                        <div class="icons">
+                            <a href="{{ asset("IMG/portfolio/thumb/8.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
+                            <a href="" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                        </div>
+                        <div class="mask"></div>
+                    </div>
+                </li>
+                <!--Portfolio Items-->
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Portfolio Section-->
+<!--Contact Section-->
+<section class="contact section" id="contact">
+    <div class="container">
+        <div class="divider"></div>
+        <div class="heading">
+            <h2>SHOOT A MESSAGE</h2>
+        </div>
+        <div class="form">
+            <div class="col-xs-12 col-sm-9 col-md-9 centered">
+                <form action="send.php" onSubmit="return false;" id="xhr" method="post" name="contactform" class="contactform">
+                    <input type="hidden" value="contact" name="type">
+                    <input name="send[name]" type="text" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" placeholder="Your name..." data-validation="required">
+                    <input name="send[email]" type="email" class=" col-xs-12 col-sm-6 col-md-6 col-lg-6 no-margin" placeholder="Your email..." data-validation="email">
+                    <textarea name="send[message]" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Your message..." data-validation="required"></textarea>
+                    <p><button class="submit sendcontact">SEND MESSAGE</button></p>
+                </form>
+                <p class="error"></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Contact Section-->
+<div id="map"></div>
+<div class="clear"></div>
+<!--Footer Section-->
+<footer class="section">
+    <div class="container">
+        <p>&copy; 2014 website.com. All Rights Reserved.</p>
+        <ul>
+            {% for socialNetwork in socialNetworks %}
+                <li>
+                    <a href="{{ socialNetwork.url }}" target="_blank" class="{{ socialNetwork.picto }}">
+                    </a>
+                </li>
+            {% endfor %}
+            <!-- <li><a target="_blank" class="facebook" href="http://www.facebook.com/"></a></li>
+            <li><a target="_blank" class="twitter" href="http://www.twitter.com/"></a></li>
+            <li><a target="_blank" class="google" href="https://plus.google.com/"></a></li>
+            <li><a target="_blank" class="linkedin" href="http://www.linkedin.com/"></a></li>
+            <li><a target="_blank" class="instagram" href="http://www.instagram.com/"></a></li>
+            <li><a target="_blank" class="youtube" href="https://www.youtube.com/"></a></li>
+            <li><a target="_blank" class="vimeo" href="http://www.vimeo.com/"></a></li>
+            <li><a target="_blank" class="tumblr" href="http://www.tumblr.com/"></a></li>
+            <li><a target="_blank" class="dribbble" href="http://www.dribbble.com/"></a></li>
+            <li><a target="_blank" class="behance" href="https://www.behance.net/"></a></li>
+            <li><a target="_blank" class="flickr" href="https://www.flickr.com/"></a></li>
+            -->
+        </ul>
+    </div>
 </footer>
-
-<!-- Add Google Maps -->
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-<script>
-    /*function myMap()
-    {
-        myCenter=new google.maps.LatLng(41.878114, -87.629798);
-        var mapOptions= {
-            center:myCenter,
-            zoom:12, scrollwheel: false, draggable: false,
-            mapTypeId:google.maps.MapTypeId.ROADMAP
-        };
-        var map=new google.maps.Map(document.getElementById("googleMap"),mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myCenter,
-        });
-        marker.setMap(map);
-    }
-
-    // Modal Image Gallery
-    function onClick(element) {
-        document.getElementById("img01").src = element.src;
-        document.getElementById("modal01").style.display = "block";
-        var captionText = document.getElementById("caption");
-        captionText.innerHTML = element.alt;
-    }*/
-
-    // Change style of navbar on scroll
-    window.onscroll = function() {myFunction()};
-    function myFunction() {
-        var navbar = document.getElementById("myNavbar");
-        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-            navbar.className = "w3-bar" + " w3-card-2" + " w3-animate-top" + " w3-white";
-        } else {
-            navbar.className = navbar.className.replace(" w3-card-2 w3-animate-top w3-white", "");
-        }
-    }
-
-    // Used to toggle the menu on small screens when clicking on the menu button
-    function toggleFunction() {
-        var x = document.getElementById("navDemo");
-        if (x.className.indexOf("w3-show") == -1) {
-            x.className += " w3-show";
-        } else {
-            x.className = x.className.replace(" w3-show", "");
-        }
-    }
-
-    $(document).ready(function()
-    {
-        $("#result_message").hide();
-    });
-
-    $("#submit").click(function()
-    {
-        if($("#name").val().trim() != "" && $("#email").val().trim() != "" && $("#message").val().trim() != "" )
-        {
-            $.ajax({
-                url: "/send_message",
-                dataType: 'json',
-                data: {
-                    name: $("#name").val(),
-                    email: $("#email").val(),
-                    message: $("#message").val()
-                },
-                method: "post",
-                success: function(data)
-                {
-                    if(!data.result)
-                        $("#result_message").addClass("error");
-                    $("#result_message").html("Message envoyé !");
-                    $("#result_message").show();
-                },
-                error: function(e)
-                {
-                    console.log(e);
-                }
-
-            });
-        }
-        else
-        {
-            if($("#name").val().trim() == "")
-            {
-                console.log("Name");
-            }
-            if($("#email").val().trim() == "")
-            {
-                console.log("Email");
-            }
-            if($("#message").val().trim() == "")
-            {
-                console.log("Message");
-            }
-        }
-    });
-</script>
+<!--Footer Section-->
+<!--Scripts-->
+<script src="{{ asset("JS/jquery.easing.1.3.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/jquery.easypiechart.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/isotope.pkgd.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/bootstrap.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/jquery.fs.boxer.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/jquery.form-validator.min.js") }}" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+<script src="{{ asset("JS/owl.carousel.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/jquery.superslides.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/jquery.inview.min.js") }}" type="text/javascript"></script>
+<script src="{{ asset("JS/script.js") }}" type="text/javascript"></script>
+<!--Scripts-->
 </body>
 </html>
