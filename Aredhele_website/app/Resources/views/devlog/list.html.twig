@@ -1,0 +1,39 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+<div class="sub-title">
+    <h2>My Blog</h2>
+    <a href="{{ url("homepage") }}#contact"><i class="icon-envelope"></i></a>
+</div>
+
+
+<div class="col-md-12 content-page">
+
+    {% for article in articles %}
+        <!-- Blog Post Start -->
+        <div class="col-md-12 blog-post">
+            {% if article.hasHeader %}
+                <div class="post-image">
+                    <img src="{{ asset("IMG/devlog/blog/1.jpg") }}"alt="">
+                </div>
+            {% endif %}
+            <div class="post-title">
+                <a href="{{ url("post", {"id" : article.id}) }}"><h1>{{ article.title }}</h1></a>
+            </div>
+            <div class="post-info">
+                <span>{{ article.createdAt | date("F d, Y") }} / by <a href="#" target="_blank">Vincent Calisto</a></span>
+            </div>
+            <p>{{ article.acroche }}</p>
+            <a href="{{ url("post", {"id" : article.id}) }}" class="button button-style button-anim fa fa-long-arrow-right"><span>Read More</span></a>
+        </div>
+        <!-- Blog Post End -->
+    {% endfor %}
+
+    <div class="col-md-12 text-center">
+        <a href="javascript:void(0)" id="load-more-post" class="load-more-button">Load</a>
+        <div id="post-end-message"></div>
+    </div>
+
+</div>
+{% endblock %}

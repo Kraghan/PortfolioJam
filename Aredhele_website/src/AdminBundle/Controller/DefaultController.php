@@ -2,6 +2,7 @@
 
 namespace AdminBundle\Controller;
 
+use DevLogBundle\Entity\Article;
 use PortfolioBundle\Entity\Categorie;
 use PortfolioBundle\Entity\Project;
 use PortfolioBundle\Entity\ProjectCategoriesMm;
@@ -536,6 +537,34 @@ class DefaultController extends Controller
         return $this->render('admin/admin_categorie.html.twig', ["categories" => $categories]);
     }
 
+    /**
+     * @Route("/article", name="article")
+     */
+    public function articleAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if($request->isMethod("POST"))
+        {
+            $article = new Article();
+            $article->setTitle($request->get("title"));
+            $article->setCreatedAt(new \DateTime($request->get("createdAt")));
+            $article->setAccroche($request->get("accroche"));
+            $article->setPublished($request->get("published") == "on" ? true : false);
+
+            $em->persist($article);
+            $em->flush();
+        }
+
+        return $this->render('admin/admin_article.html.twig');
+    }
+
 
     private function upload($inputName, $filename, $uploaddir = "", $fileType = ["image/jpg","image/jpeg","image/png"])
     {
@@ -632,8 +661,4 @@ class DefaultController extends Controller
         return isset($files[0]) ? ".".pathinfo($files[0])["extension"] : false;
     }
 
-    private function d($data)
-    {
-        echo "<pre>"; print_r($data); echo "</pre>";
-    }
 }

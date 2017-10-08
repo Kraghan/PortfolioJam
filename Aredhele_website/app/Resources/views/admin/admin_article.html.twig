@@ -1,0 +1,235 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+<div class="content-inner">
+    <h2>Creation d'un nouvel article</h2>
+    <div class="well">
+        <div>
+            <form enctype="multipart/form-data" method="post" autocomplete="off">
+                <h3>Propriétés de l'article</h3>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="title">Titre de l'article</label>
+                        </td>
+                        <td>
+                            <input type="text" id="title" name="title" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="createdAt">Publier le (laisser vide pour le publier immédiatement)</label>
+                        </td>
+                        <td>
+                            <input type="text" id="createdAt" name="createdAt">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="published">Cacher l'article (il ne sera pas visible en ligne)</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="published" name="published">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="accroche">Acroche de l'article</label>
+                        </td>
+                        <td>
+                            <textarea class="accroche" id="accroche" name="accroche"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <h3 id="insert_anchor">Ajout d'un bloc de contenu</h3>
+                <table>
+                    <tr>
+                        <td><a href="javascript:void(0);" id="add_paragraphe" class="btn btn-primary">Ajouter un paragraphe</a></td>
+                        <td><a href="javascript:void(0);" id="add_image" class="btn btn-primary">Ajouter une image</a></td>
+                        <td><a href="javascript:void(0);" id="add_video" class="btn btn-primary">Ajouter une vidéo</a></td>
+                        <td><a href="javascript:void(0);" id="add_quote" class="btn btn-primary">Ajouter une citation</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="javascript:void(0);" id="add_prog" class="btn btn-primary">Ajouter un fragment de code</a></td>
+                        <td><a href="javascript:void(0);" id="add_multiImage" class="btn btn-primary">Ajouter plusieurs images</a></td>
+                        <td><a href="javascript:void(0);" id="add_blockQuote" class="btn btn-primary">Ajouter un block de citation</a></td>
+                        <td><a href="javascript:void(0);" id="add_list" class="btn btn-primary">Ajouter une liste</a></td>
+
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        var nbParagraphe = 0;
+        var nbImage = 0;
+        var nbVideo = 0;
+        var nbQuote = 0;
+        var nbProg = 0;
+        var nbmultiImage = 0;
+        var nbBlockQuote = 0;
+        var nbList = 0;
+
+        $(document).ready(function()
+        {
+            CKEDITOR.replace( 'accroche' );
+            $("#add_paragraphe").click(function()
+            {
+                nbParagraphe++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<table>" +
+                        "<tr>" +
+                            "<td>Texte</td>" +
+                            "<td>" +
+                                "<textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_image").click(function()
+            {
+                nbImage++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Image " + nbImage + "</h3>" +
+                    "<table>" +
+                        "<tr>" +
+                            "<td>Image</td>" +
+                            "<td>" +
+                                "<input type='file' id='image_"+nbImage+"' name='image["+nbImage+"][image]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Légende</td>" +
+                            "<td>" +
+                                "<input type='text' id='imageLegend_"+nbImage+"' name='image["+nbImage+"][legend]'>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_video").click(function()
+            {
+                nbVideo++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Vidéo " + nbVideo + "</h3>" +
+                    "<table>" +
+                        "<tr>" +
+                            "<td>URL</td>" +
+                            "<td>" +
+                                "<input type='text' id='videoUrl_"+nbVideo+"' name='video["+nbVideo+"][url]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Légende</td>" +
+                            "<td>" +
+                                "<input type='text' id='videoLegend_"+nbVideo+"' name='video["+nbVideo+"][legend]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Thumb</td>" +
+                            "<td>" +
+                                "<input type='file' id='videoThumb_"+nbVideo+"' name='video["+nbVideo+"][thumb]'>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_quote").click(function()
+            {
+                nbQuote++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Citation " + nbQuote + "</h3>" +
+                    "<table>" +
+                        "<tr>" +
+                            "<td>Phrase</td>" +
+                            "<td>" +
+                                "<input type='text' id='quote_"+nbQuote+"' name='quote["+nbQuote+"]'>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_prog").click(function()
+            {
+                nbProg++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Fragment de code " + nbProg + "</h3>" +
+                    "<table>" +
+                        "<tr>" +
+                            "<td>Langage</td>" +
+                            "<td>" +
+                                "<select id='progLangage_"+nbProg+"' name='prog["+nbProg+"][langage]'>" +
+                                    "<option value='Bash'>Bash</option>" +
+                                    "<option value='Cpp'>C++</option>" +
+                                    "<option value='CSharp'>C#</option>" +
+                                "</select>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Code</td>" +
+                            "<td>" +
+                                "<textarea id='prog_"+nbProg+"' name='prog["+nbProg+"]' rows='8'></textarea>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_multiImage").click(function()
+            {
+                nbParagraphe++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<table>" +
+                    "<tr>" +
+                    "<td>Texte</td>" +
+                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
+                    "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_blockQuote").click(function()
+            {
+                nbParagraphe++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<table>" +
+                    "<tr>" +
+                    "<td>Texte</td>" +
+                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
+                    "</tr>" +
+                    "</table>");
+            });
+
+            $("#add_list").click(function()
+            {
+                nbParagraphe++;
+
+                $('#insert_anchor').before(" " +
+                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<table>" +
+                    "<tr>" +
+                    "<td>Texte</td>" +
+                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
+                    "</tr>" +
+                    "</table>");
+            });
+        });
+
+    </script>
+{% endblock %}

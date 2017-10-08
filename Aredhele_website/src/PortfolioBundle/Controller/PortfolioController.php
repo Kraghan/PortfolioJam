@@ -10,12 +10,10 @@ use PortfolioBundle\Entity\Contact;
 class PortfolioController extends Controller
 {
     /**
-     * @Route("/{trad}", requirements={"trad":"en|fr"}, defaults={"trad" :"fr"}, name="homepage")
+     * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
-        $lang = $request->get("trad");
-
         $em = $this->getDoctrine()->getManager();
 
         $socialNetworks = $em->getRepository("PortfolioBundle:SocialNetwork")
@@ -54,11 +52,7 @@ class PortfolioController extends Controller
 
         $content2 = file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\content2.txt');
 
-        $dataTrad = json_decode(file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\trads.json'),true);
-
         $gps = json_decode(file_get_contents($this->get('kernel')->getRootDir() . '\\..\\web\\TXT\\gps.json'),true);
-
-        $dataTrad = $dataTrad[$lang];
 
         $filenamephoto = "photo".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\photo');
         $filenamebackground1 = "background1".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\background1');
@@ -76,7 +70,6 @@ class PortfolioController extends Controller
             "workExperiences" => $workExperiences,
             "content" => $content,
             "content2" => $content2,
-            "trad" => $dataTrad,
             "background1" => $filenamebackground1,
             "background2" => $filenamebackground2,
             "background3" => $filenamebackground3,
