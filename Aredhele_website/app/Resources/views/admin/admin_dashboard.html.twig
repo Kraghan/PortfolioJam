@@ -1,0 +1,53 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+        {% if contacts|length != 0 %}
+            <div class="content-inner">
+                <div class="well">
+                    <h3>Demandes de contacts en attentes</h3>
+                    <div>
+                        <form enctype="multipart/form-data" method="post" autocomplete="off">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Nom
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                        Messages
+                                    </th>
+                                    <th>
+                                        Marquer comme lu
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for contact in contacts %}
+                                    <tr>
+                                        <td>{{ contact.createdAt | date("d/m/Y H:i") }}</td>
+                                        <td>{{ contact.name }}</td>
+                                        <td>{{ contact.email }}</td>
+                                        <td>{{ contact.message }}</td>
+                                        <td><input type="checkbox" name="contact[]" value="{{ contact.id }}"></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <input type="submit" value="Marquer comme lu" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

@@ -49,6 +49,13 @@ class Contact
      */
     private $createdAt;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="answered", type="boolean")
+     */
+    private $answered;
+
 
     /**
      * Get id
@@ -154,6 +161,30 @@ class Contact
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Set answered
+     *
+     * @param boolean $answered
+     *
+     * @return Contact
+     */
+    public function setAnswered($answered)
+    {
+        $this->answered = $answered;
+
+        return $this;
+    }
+
+    /**
+     * Get answered
+     *
+     * @return bool
+     */
+    public function getAnswered()
+    {
+        return $this->answered;
     }
 }
 

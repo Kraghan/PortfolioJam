@@ -93,5 +93,20 @@ class Categorie
     {
         return $this->isFilter;
     }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        $name = $this->name;
+        $name = str_replace("+","plus", $name);
+        $name = str_replace("-","minus", $name);
+        $name = str_replace(" ","_", $name);
+
+        return $name;
+    }
 }
 

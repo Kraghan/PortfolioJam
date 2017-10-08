@@ -145,7 +145,26 @@ class DefaultController extends Controller
         if(!$retour[0])
             return $retour[1];
 
-        return $this->render('admin/admin_base.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        if($request->isMethod("POST"))
+        {
+            foreach ($request->get("contact") as $contact)
+            {
+                $c = $em->getRepository("PortfolioBundle:Contact")
+                    ->findOneBy(array("id" => $contact));
+
+                $c->setAnswered(true);
+                $em->persist($c);
+            }
+            $em->flush();
+            
+        }
+
+        $contacts = $em->getRepository("PortfolioBundle:Contact")
+            ->findBy(array("answered" => false), array("createdAt" => "ASC"));
+
+        return $this->render('admin/admin_dashboard.html.twig',["contacts" => $contacts]);
     }
 
     /**

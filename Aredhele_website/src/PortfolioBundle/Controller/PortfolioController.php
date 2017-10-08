@@ -37,15 +37,15 @@ class PortfolioController extends Controller
 
         foreach ($projectsDB as $p)
         {
-            $mm = $em->getRepository("PortfolioBundle:ProjectCategorieMm")
+            $mm = $em->getRepository("PortfolioBundle:ProjectCategoriesMm")
                 ->findBy(array("projectId" => $p->getId()));
 
             $cat = [];
 
             foreach ($mm as $m)
                 foreach ($categories as $c)
-                    if($m->getId() == $c->getId())
-                        $cat[] = $c->getName();
+                    if($m->getCategoryId() == $c->getId())
+                        $cat[] = $c->getSlug();
 
             $projects[] = array("project" => $p, "categories" => $cat);
         }
@@ -103,6 +103,7 @@ class PortfolioController extends Controller
             $contact->setEmail($request->get("email"));
             $contact->setMessage($request->get("message"));
             $contact->setCreatedAt(new \DateTime());
+            $contact->setAnswered(false);
             $em->persist($contact);
             $em->flush();
 
@@ -118,5 +119,11 @@ class PortfolioController extends Controller
         $files = glob($filename.".*");
 
         return isset($files[0]) ? ".".pathinfo($files[0])["extension"] : false;
+    }
+
+
+    private function d($data)
+    {
+        echo "<pre>"; print_r($data); echo "</pre>";
     }
 }

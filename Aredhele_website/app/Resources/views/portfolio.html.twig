@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>One - Flat Theme</title>
+    <title>Vincent Calisto</title>
     <!--Metatags-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale = 1, maximum-scale = 1, user-scalable = no, width = device-width" />
@@ -51,8 +51,8 @@
         </nav>
         <div class="welcome-message">
             <div class="heading">
-                <p>HI, I'M JOHN DOE</p>
-                <p class="small">Art Director from Istanbul</p>
+                <p>HI, I'M VINCENT CALISTO</p>
+                <p class="small">Game programmer from Besançon</p>
             </div>
             <a href="#home" class="borderBtn scrollto">MORE ABOUT ME</a>
         </div>
@@ -202,7 +202,7 @@
                 <!--Portfolio Filters-->
                 <li><a href="#" data-filter="*" class="current">ALL</a></li>
                 {% for cat in categories %}
-                    <li><a href="#" data-filter=".{{ cat.name }}">{{ cat.name }}</a></li>
+                    <li><a href="#" data-filter=".{{ cat.slug }}">{{ cat.name }}</a></li>
                 {% endfor %}
                 <!--Portfolio Filters-->
             </ul>
@@ -211,12 +211,12 @@
             <ul class="row portfolio-items">
                 <!--Portfolio Items-->
                 {% for project in projects %}
-                    <li class="{% for cat in project.categories %}{{ cat }} {% endfor %} col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
+                    <li class="{% for cat in project.categories %}{{ cat }} {% endfor %}col-xs-6 col-sm-4 col-md-3 col-lg-3" onclick="">
                         <div class="item">
-                            <img src="{{ asset("IMG/portfolio/thumb/"~project.thumb) }}" alt="{{ project.name }}">
+                            <img src="{{ asset("IMG/"~project.project.thumb) }}" alt="{{ project.project.name }}">
                             <div class="icons">
                                 <a href="{{ asset("IMG/portfolio/thumb/1.jpg") }}" data-gallery="portfolio" title="Caption" class="fullwidth"><i class="glyphicon glyphicon-search"></i></a>
-                                <a href="{{ project.link }}" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+                                <a href="{{ project.project.link }}" class="projectlink" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
                             </div>
                             <div class="mask"></div>
                         </div>
@@ -237,11 +237,11 @@
         </div>
         <div class="form">
             <div class="col-xs-12 col-sm-9 col-md-9 centered">
-                <form action="send.php" onSubmit="return false;" id="xhr" method="post" name="contactform" class="contactform">
+                <form action="/send_message" onSubmit="return false;" id="xhr" method="post" name="contactform" class="contactform">
                     <input type="hidden" value="contact" name="type">
-                    <input name="send[name]" type="text" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" placeholder="Your name..." data-validation="required">
-                    <input name="send[email]" type="email" class=" col-xs-12 col-sm-6 col-md-6 col-lg-6 no-margin" placeholder="Your email..." data-validation="email">
-                    <textarea name="send[message]" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Your message..." data-validation="required"></textarea>
+                    <input name="name" type="text" class="col-xs-12 col-sm-6 col-md-6 col-lg-6" placeholder="Your name..." data-validation="required">
+                    <input name="email" type="email" class=" col-xs-12 col-sm-6 col-md-6 col-lg-6 no-margin" placeholder="Your email..." data-validation="email">
+                    <textarea name="message" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Your message..." data-validation="required" rows="10"></textarea>
                     <p><button class="submit sendcontact">SEND MESSAGE</button></p>
                 </form>
                 <p class="error"></p>

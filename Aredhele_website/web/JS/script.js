@@ -168,12 +168,12 @@ $(document).ready(function(){
 		onSuccess:function(){
 			$('.sendcontact').prop("disabled",true);
 			$('p.error').html('Your message sent.');
-			var name		= $("form[name=contactform] input[name='send[name]']").val(),
-				email		= $("form[name=contactform] input[name='send[email]']").val(),
-				message		= $("form[name=contactform] textarea[name='send[message]']").val();
+			var name		= $("form[name=contactform] input[name='name']").val(),
+				email		= $("form[name=contactform] input[name='email']").val(),
+				message		= $("form[name=contactform] textarea[name='message']").val();
 
 			$.ajax({
-				url: '/send.php',
+				url: '/send_message',
 				type: 'POST',
 				data: {type: 'contact', name : name, email : email, message : message},
 				dataType: 'json',
