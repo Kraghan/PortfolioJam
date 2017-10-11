@@ -155,5 +155,10 @@ class Article
     {
         return $this->accroche;
     }
+
+    public function hasHeader()
+    {
+        return false;
+    }
 }
 

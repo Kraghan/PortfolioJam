@@ -57,6 +57,9 @@
                         <td><a href="javascript:void(0);" id="add_list" class="btn btn-primary">Ajouter une liste</a></td>
 
                     </tr>
+                    <tr>
+                        <td colspan="4"><input type="submit" value="Enregistrer" class="btn btn-primary"></td>
+                    </tr>
                 </table>
             </form>
         </div>
@@ -76,32 +79,40 @@
         var nbmultiImage = 0;
         var nbBlockQuote = 0;
         var nbList = 0;
+        var order = 0;
 
         $(document).ready(function()
         {
+            $("#createdAt").datepicker();
             CKEDITOR.replace( 'accroche' );
             $("#add_paragraphe").click(function()
             {
                 nbParagraphe++;
+                order++;
 
                 $('#insert_anchor').before(" " +
                     "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='paragraphe["+nbParagraphe+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Texte</td>" +
                             "<td>" +
-                                "<textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea>" +
+                                "<textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"][texte]' rows='8'></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table>");
+                    "</table><br>");
+
+                CKEDITOR.replace("paragraphe_"+nbParagraphe);
             });
 
             $("#add_image").click(function()
             {
                 nbImage++;
+                order++;
 
                 $('#insert_anchor').before(" " +
                     "<h3>Image " + nbImage + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='image["+nbImage+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Image</td>" +
@@ -115,15 +126,17 @@
                                 "<input type='text' id='imageLegend_"+nbImage+"' name='image["+nbImage+"][legend]'>" +
                             "</td>" +
                         "</tr>" +
-                    "</table>");
+                    "</table><br>");
             });
 
             $("#add_video").click(function()
             {
                 nbVideo++;
+                order++;
 
                 $('#insert_anchor').before(" " +
                     "<h3>Vidéo " + nbVideo + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='video["+nbVideo+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>URL</td>" +
@@ -143,91 +156,156 @@
                                 "<input type='file' id='videoThumb_"+nbVideo+"' name='video["+nbVideo+"][thumb]'>" +
                             "</td>" +
                         "</tr>" +
-                    "</table>");
+                    "</table><br>");
             });
 
             $("#add_quote").click(function()
             {
                 nbQuote++;
+                order++;
 
                 $('#insert_anchor').before(" " +
                     "<h3>Citation " + nbQuote + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='quote["+nbQuote+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Phrase</td>" +
                             "<td>" +
-                                "<input type='text' id='quote_"+nbQuote+"' name='quote["+nbQuote+"]'>" +
+                                "<input type='text' id='quote_"+nbQuote+"' name='quote["+nbQuote+"][quote]'>" +
                             "</td>" +
                         "</tr>" +
-                    "</table>");
+                    "</table><br>");
             });
 
             $("#add_prog").click(function()
             {
                 nbProg++;
+                order++;
 
                 $('#insert_anchor').before(" " +
                     "<h3>Fragment de code " + nbProg + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='prog["+nbProg+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Langage</td>" +
                             "<td>" +
                                 "<select id='progLangage_"+nbProg+"' name='prog["+nbProg+"][langage]'>" +
-                                    "<option value='Bash'>Bash</option>" +
                                     "<option value='Cpp'>C++</option>" +
                                     "<option value='CSharp'>C#</option>" +
+                                    "<option value='Bash'>Bash</option>" +
                                 "</select>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Code</td>" +
                             "<td>" +
-                                "<textarea id='prog_"+nbProg+"' name='prog["+nbProg+"]' rows='8'></textarea>" +
+                                "<textarea id='prog_"+nbProg+"' name='prog["+nbProg+"][texte]' rows='8'></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table>");
+                    "</table><br>");
+
+                CKEDITOR.replace("prog_"+nbProg);
             });
 
             $("#add_multiImage").click(function()
             {
-                nbParagraphe++;
+                nbmultiImage++;
+                order++;
 
                 $('#insert_anchor').before(" " +
-                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<h3>Plusieurs images " + nbmultiImage + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='multiImage["+nbmultiImage+"][order]'>" +
                     "<table>" +
-                    "<tr>" +
-                    "<td>Texte</td>" +
-                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
-                    "</tr>" +
-                    "</table>");
+                        "<tr>" +
+                            "<td>Image 1</td>" +
+                            "<td>" +
+                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][image]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Légende 1</td>" +
+                            "<td>" +
+                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][legend]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr id='insert_image_anchor_"+nbmultiImage+"'>" +
+                            "<td>Ajout d'image</td>" +
+                            "<td>" +
+                                "<a class='btn btn-primary' id='multiImageButtonAdd_"+nbmultiImage+"'>Ajouter une image</a>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table><br>" +
+                    "<input type='hidden' id='image_compteur_"+nbmultiImage+"' value='1'>");
+
+                $("#multiImageButtonAdd_"+nbmultiImage).click(function()
+                {
+                    var cpt = $("#image_compteur_"+nbmultiImage).val();
+                    console.log(cpt);
+                    ++cpt;
+                    console.log(cpt);
+                    $("#image_compteur_"+nbmultiImage).val(cpt);
+                    $("#insert_image_anchor_"+nbmultiImage).before("" +
+                        "<tr>" +
+                            "<td>Image "+cpt+"</td>" +
+                            "<td>" +
+                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][image]'>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Légende "+cpt+"</td>" +
+                            "<td>" +
+                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][legend]'>" +
+                            "</td>" +
+                        "<tr>");
+                });
             });
 
             $("#add_blockQuote").click(function()
             {
-                nbParagraphe++;
+                nbBlockQuote++;
+                order++;
 
                 $('#insert_anchor').before(" " +
-                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<h3>Block de citation " + nbBlockQuote + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='blockQuote["+nbBlockQuote+"][order]'>" +
                     "<table>" +
-                    "<tr>" +
-                    "<td>Texte</td>" +
-                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
-                    "</tr>" +
-                    "</table>");
+                        "<tr>" +
+                            "<td>Texte</td>" +
+                            "<td>" +
+                                "<textarea id='blockQuote_"+nbBlockQuote+"' name='blockQuote["+nbBlockQuote+"][texte]' rows='8'></textarea>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table><br>");
+
+                CKEDITOR.replace("blockQuote_"+nbBlockQuote);
             });
 
             $("#add_list").click(function()
             {
-                nbParagraphe++;
+                nbList++;
+                order++;
 
                 $('#insert_anchor').before(" " +
-                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                    "<h3>Liste (un retour à la ligne pour chaque item) " + nbList + "</h3>" +
+                    "<input type='hidden' value='"+order+"' name='list["+nbList+"][order]'>" +
                     "<table>" +
-                    "<tr>" +
-                    "<td>Texte</td>" +
-                    "<td><textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"]' rows='8'></textarea></td>" +
-                    "</tr>" +
-                    "</table>");
+                        "<tr>" +
+                            "<td>Liste</td>" +
+                            "<td>" +
+                                "<select id='listStyle_"+nbList+"' name='list["+nbList+"][style]'>" +
+                                    "<option value=''>Points noirs</option> "+
+                                    "<option value='list-style'>Numéros</option> "+
+                                    "<option value='list-style-2'>Points blancs</option> "+
+                                "</select>" +
+                            "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                            "<td>Liste</td>" +
+                            "<td>" +
+                                "<textarea id='list_"+nbList+"' name='list["+nbList+"][items]' rows='8'></textarea>" +
+                            "</td>" +
+                        "</tr>" +
+                    "</table><br>");
             });
         });
 

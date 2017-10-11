@@ -3,6 +3,7 @@
 namespace AdminBundle\Controller;
 
 use DevLogBundle\Entity\Article;
+use DevLogBundle\Entity\ArticleBlock;
 use PortfolioBundle\Entity\Categorie;
 use PortfolioBundle\Entity\Project;
 use PortfolioBundle\Entity\ProjectCategoriesMm;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class DefaultController extends Controller
 {
-    private function checkConnexion(Request $request)
+    private function checkConnexion(Request $request, $withTimeRestriction = true)
     {
         $session = $request->getSession();
 
@@ -33,7 +34,7 @@ class DefaultController extends Controller
         if($session->has("lastConnexion"))
         {
             $date = date_diff($session->get("lastConnexion"),new \DateTime());
-            if($date->h >= 1)
+            if($date->h >= 1 && $withTimeRestriction)
             {
                 $session->getFlashBag()->add('error', 'Log out !');
                 $session->clear();
@@ -542,7 +543,7 @@ class DefaultController extends Controller
      */
     public function articleAction(Request $request)
     {
-        $retour = $this->checkConnexion($request);
+        $retour = $this->checkConnexion($request, false);
         if(!$retour[0])
             return $retour[1];
 
@@ -559,6 +560,175 @@ class DefaultController extends Controller
             $article->setPublished($request->get("published") == "on" ? true : false);
 
             $em->persist($article);
+            $em->flush();
+
+            $paragraphes = $request->get("paragraphe");
+            $images = $request->get("image");
+            $videos = $request->get("video");
+            $quotes = $request->get("quote");
+            $progs = $request->get("prog");
+            $multimages = $request->get("multiImage");
+            $blockQuotes = $request->get("blockQuote");
+            $list = $request->get("list");
+
+            foreach ($paragraphes as $paragraphe)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("paragraphe");
+                $block->setOrdering(intval($paragraphe["order"]));
+
+                $block->setContent($paragraphe["texte"]);
+                $em->persist($block);
+            }
+
+            foreach ($images as $key => $image)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("paragraphe");
+                $block->setOrdering($image["order"]);
+                if($_FILES["image"]["name"][$key]["image"] != "")
+                {
+                    $uploadRes = $this->upload2("image", "article_".$article->getId().'_image_'.$key,$key,"image");
+                    if ($uploadRes["result"]) {
+                        $session->getFlashBag()->add('success', "Upload réussie !");
+                    } else
+                        $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
+
+                    $content = '<div class="post-image margin-top-40 margin-bottom-40">
+                        <img src="/IMG/'.$uploadRes["filename"].'" alt="">
+                        <p>' . $image["legend"] . '</p>
+                    </div>';
+                }
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($videos as $key => $video)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("video");
+                $block->setOrdering($video["order"]);
+                if($_FILES["video"]["name"][$key]["thumb"] != "")
+                {
+                    $uploadRes = $this->upload2("video", "article_" . $article->getId() . '_video_' . $key, $key, "thumb");
+                    if ($uploadRes["result"]) {
+                        $session->getFlashBag()->add('success', "Upload réussie !");
+                    } else
+                        $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
+
+                    $content = '<div class="video-box margin-top-40 margin-bottom-40">
+                        <div class="video-tutorial">
+                            <a class="video-popup" href="' . $video["url"] . '" title="' . $video["url"] . '">
+                                <img src="/IMG/'.$uploadRes["filename"].'" alt="">
+                            </a>
+                        </div>
+                        <p>' . $video["legend"] . '</p>
+                    </div>';
+                }
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($quotes as $quote)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("quote");
+                $block->setOrdering($quote["order"]);
+
+                $content = '<div class="post-quote margin-top-40 margin-bottom-40">
+                    <blockquote>'.$quote["quote"].'</blockquote>
+                </div>';
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($progs as $prog)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("prog");
+                $block->setOrdering($prog["order"]);
+                $content = '<div class="margin-top-40 margin-bottom-40">
+                    <pre class="brush: '.$prog["langage"].'">
+                        '.$prog["texte"].'
+                    </pre>
+                </div>';
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($blockQuotes as $blockQuote)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("blockQuote");
+                $block->setOrdering($blockQuote["order"]);
+                $content = '<blockquote class="margin-top-40 margin-bottom-40">
+                    <p>'.$blockQuote["texte"].'</p>
+                </blockquote>';
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($list as $l)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("liste");
+                $block->setOrdering($l["order"]);
+                $content = '<div class="list '.$l['style'].'">
+                    <ul>';
+                foreach (explode("\n",$l["items"]) as $item)
+                        $content.= '<li>'.$item.'</li>';
+                $content .= '</ul>
+                </div>';
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
+
+            foreach ($multimages as $key2 => $multimage)
+            {
+                $block = new ArticleBlock();
+                $block->setArticleId($article->getId());
+                $block->setType("multimage");
+                $block->setOrdering($multimage["order"]);
+                $content = '<div class="row margin-top-40 margin-bottom-40">';
+                foreach ($multimage as $key => $value)
+                {
+                    if($key == "order")
+                        continue;
+
+                    if($_FILES["multiImage"]["name"][$key2][$key]["image"] != "")
+                    {
+                        $uploadRes = $this->upload3("multiImage", "article_" . $article->getId() . '_multiimage_' . $key2 . '_'.$key, $key2, $key, "image");
+                        if ($uploadRes["result"]) {
+                            $session->getFlashBag()->add('success', "Upload réussie !");
+                        } else
+                            $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
+
+
+                        $content .= '<div class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="/IMG/' .$uploadRes["filename"].'" class="image-popup" title="' . $value['legend'] . '">
+                                <img src="/IMG/' .$uploadRes["filename"].'" class="img-responsive" alt="">
+                            </a>
+                        </div>';
+                    }
+                }
+                $content .= '</div>';
+
+                $block->setContent($content);
+                $em->persist($block);
+            }
             $em->flush();
         }
 
@@ -654,11 +824,192 @@ class DefaultController extends Controller
         }
     }
 
+    private function upload2($inputName, $filename, $cpt, $subname, $uploaddir = "", $fileType = ["image/jpg","image/jpeg","image/png"])
+    {
+        if($uploaddir == "")
+            $uploaddir = $this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\';
+
+        $extension = "";
+        $explode = explode(".",strtolower($_FILES[$inputName]["name"][$cpt][$subname]));
+        switch($explode[count($explode)-1])
+        {
+            case 'jpg':
+                if (!in_array("image/jpg", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".jpg";
+                break;
+            case 'png':
+                if (!in_array("image/png", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".png";
+                break;
+            case 'jpeg':
+                if (!in_array("image/jpeg", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".jpeg";
+                break;
+            case 'gif':
+                if (!in_array("image/gif", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".gif";
+                break;
+            case 'zip':
+                if (!in_array("application/x-compressed", $fileType)
+                    && !in_array("application/x-zip-compressed", $fileType)
+                    && !in_array("application/zip", $fileType)
+                    && !in_array("multipart/x-zip", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".zip";
+                break;
+            case 'pdf':
+                if (!in_array("application/pdf", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".pdf";
+                break;
+            default:
+                return [
+                    "result" => false,
+                    "message" => "Type de fichier inconnu ! "
+                ];
+                break;
+        }
+
+        if($ext = $this->getFileExtension($uploaddir.$filename))
+            unlink($uploaddir.$filename.$ext);
+
+        if (move_uploaded_file($_FILES[$inputName]['tmp_name'][$cpt][$subname], $uploaddir.$filename.$extension))
+        {
+            return [
+                "result" => true,
+                "message" => "Upload réussie ! ",
+                "filename" => $filename.$extension
+            ];
+        }
+        else
+        {
+            return [
+                "result" => false,
+                "message" => "Upload échouée ! "
+            ];
+        }
+    }
+
+    private function upload3($inputName, $filename, $cpt, $cpt2, $subname, $uploaddir = "", $fileType = ["image/jpg","image/jpeg","image/png"])
+    {
+        if($uploaddir == "")
+            $uploaddir = $this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\';
+
+        $extension = "";
+        $explode = explode(".",strtolower($_FILES[$inputName]["name"][$cpt][$cpt2][$subname]));
+        switch($explode[count($explode)-1])
+        {
+            case 'jpg':
+                if (!in_array("image/jpg", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".jpg";
+                break;
+            case 'png':
+                if (!in_array("image/png", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".png";
+                break;
+            case 'jpeg':
+                if (!in_array("image/jpeg", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".jpeg";
+                break;
+            case 'gif':
+                if (!in_array("image/gif", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".gif";
+                break;
+            case 'zip':
+                if (!in_array("application/x-compressed", $fileType)
+                    && !in_array("application/x-zip-compressed", $fileType)
+                    && !in_array("application/zip", $fileType)
+                    && !in_array("multipart/x-zip", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".zip";
+                break;
+            case 'pdf':
+                if (!in_array("application/pdf", $fileType))
+                    return [
+                        "result" => false,
+                        "message" => "Mauvais type de fichier ! "
+                    ];
+                $extension = ".pdf";
+                break;
+            default:
+                return [
+                    "result" => false,
+                    "message" => "Type de fichier inconnu ! "
+                ];
+                break;
+        }
+
+        if($ext = $this->getFileExtension($uploaddir.$filename))
+            unlink($uploaddir.$filename.$ext);
+
+        if (move_uploaded_file($_FILES[$inputName]['tmp_name'][$cpt][$cpt2][$subname], $uploaddir.$filename.$extension))
+        {
+            return [
+                "result" => true,
+                "message" => "Upload réussie ! ",
+                "filename" => $filename.$extension
+            ];
+        }
+        else
+        {
+            return [
+                "result" => false,
+                "message" => "Upload échouée ! "
+            ];
+        }
+    }
+
     private function getFileExtension($filename)
     {
         $files = glob($filename.".*");
 
         return isset($files[0]) ? ".".pathinfo($files[0])["extension"] : false;
+    }
+
+    private function d($data)
+    {
+        echo "<pre>"; print_r($data); echo "</pre>";
     }
 
 }

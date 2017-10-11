@@ -50,7 +50,7 @@ a {
     text-decoration: none;
 }
 
-input[type="text"], input[type="file"], input[type="password"], textarea
+select,input[type="text"], input[type="file"], input[type="password"], textarea
 {
     border-radius:5px;
     border-color: #2b2b2b;

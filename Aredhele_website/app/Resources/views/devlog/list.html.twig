@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html.twig' %}
+{% extends 'devlog/base.html.twig' %}
 
 {% block body %}
 
@@ -9,7 +9,6 @@
 
 
 <div class="col-md-12 content-page">
-
     {% for article in articles %}
         <!-- Blog Post Start -->
         <div class="col-md-12 blog-post">
@@ -24,7 +23,7 @@
             <div class="post-info">
                 <span>{{ article.createdAt | date("F d, Y") }} / by <a href="#" target="_blank">Vincent Calisto</a></span>
             </div>
-            <p>{{ article.acroche }}</p>
+            {{ article.accroche | raw}}
             <a href="{{ url("post", {"id" : article.id}) }}" class="button button-style button-anim fa fa-long-arrow-right"><span>Read More</span></a>
         </div>
         <!-- Blog Post End -->

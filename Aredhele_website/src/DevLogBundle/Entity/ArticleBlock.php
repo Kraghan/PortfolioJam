@@ -22,6 +22,13 @@ class ArticleBlock
     private $id;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="ordering", type="integer")
+     */
+    private $ordering;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
@@ -51,6 +58,29 @@ class ArticleBlock
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get ordering
+     *
+     * @return int
+     */
+    public function getOrdering()
+    {
+        return $this->ordering;
+    }
+
+    /**
+     * Set ordering
+     *
+     * @param int $ordering
+     *
+     * @return ArticleBlock
+     */
+    public function setOrdering($ordering)
+    {
+        $this->ordering = $ordering;
+        return $this;
     }
 
     /**
