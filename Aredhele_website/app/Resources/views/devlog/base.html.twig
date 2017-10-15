@@ -38,6 +38,8 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <link rel="stylesheet" type="text/css" href="{{ asset("CSS/devlog/syntax/shCore.css") }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset("CSS/devlog/syntax/shThemeDefault.css") }}">
 
 </head>
 
@@ -176,6 +178,18 @@
 
 <!-- Main Javascript File  -->
 <script type="text/javascript" src="{{ asset("JS/devlog/scripts.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shCore.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushJScript.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushPlain.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushPython.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushXml.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushCpp.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushCSharp.js") }}"></script>
+<script type="text/javascript" src="{{ asset("JS/devlog/syntax/shBrushBash.js") }}"></script>
+<script type="text/javascript">
+    SyntaxHighlighter.config.clipboardSwf = '{{ asset("JS/devlog/syntax/clipboard.swf") }}';
+    SyntaxHighlighter.all();
+</script>
 
 
 </body>

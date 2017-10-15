@@ -24,7 +24,7 @@
                 <span>{{ article.createdAt | date("F d, Y") }} / by <a href="#" target="_blank">Vincent Calisto</a></span>
             </div>
             {{ article.accroche | raw}}
-            <a href="{{ url("post", {"id" : article.id}) }}" class="button button-style button-anim fa fa-long-arrow-right"><span>Read More</span></a>
+            <a href="{{ url("post", {"id" : article.slug}) }}" class="button button-style button-anim fa fa-long-arrow-right"><span>Read More</span></a>
         </div>
         <!-- Blog Post End -->
     {% endfor %}

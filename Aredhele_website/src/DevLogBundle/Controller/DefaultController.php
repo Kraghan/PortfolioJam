@@ -12,7 +12,7 @@ use Symfony\Component\BrowserKit\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="homeblog")
+     * @Route("/{id}", defaults={"id" :""}, name="homeblog")
      */
     public function indexAction()
     {
@@ -21,8 +21,8 @@ class DefaultController extends Controller
         $networks = $em->getRepository("PortfolioBundle:SocialNetwork")
             ->findAll();
 
-        $articles = $em->getRepository("DevLogBundle:Article")
-            ->findAll();
+        $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt DESC')
+            ->getResult();
 
         $filenamephoto = "photo".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\photo');
 
@@ -34,7 +34,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/post/{id}", name="post", requirements={"id": "\d+"})
+     * @Route("/post/{id}", name="post")
      */
     public function postAction($id)
     {
@@ -43,11 +43,29 @@ class DefaultController extends Controller
         $networks = $em->getRepository("PortfolioBundle:SocialNetwork")
             ->findAll();
 
-        $articles = $em->getRepository("DevLogBundle:Article")
-            ->findAll();
+        $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt DESC')
+            ->getResult();
 
-        $article = $em->getRepository("DevLogBundle:Article")
-            ->findOneBy(array("id" => $id));
+        foreach ($articles as $a)
+            if($a->getSlug() == $id) {
+                $article = $a;
+                break;
+            }
+
+        if(!isset($article))
+        {
+            // Forward 404
+        }
+        else
+            $id = $article->getId();
+
+        $mm = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+            ->findBy(array("articleId" => $id));
+
+        $categories = array();
+        foreach($mm as $m)
+            $categories[] = $em->getRepository("PortfolioBundle:Categorie")
+                ->findOneBy(array("id" => $m->getCategoryId()));
 
         $blocks = $em->getRepository("DevLogBundle:ArticleBlock")
             ->findBy(array("articleId" => $id), array("ordering" => "ASC"));
@@ -62,7 +80,8 @@ class DefaultController extends Controller
             "blocks" => $blocks,
             "photo" => $filenamephoto,
             "contentAuthor" => $contentAuthor,
-            "articles" => $articles
+            "articles" => $articles,
+            "categories" => $categories
         ]);
     }
 
@@ -73,5 +92,11 @@ class DefaultController extends Controller
         $files = glob($filename.".*");
 
         return isset($files[0]) ? ".".pathinfo($files[0])["extension"] : false;
+    }
+
+
+    private function d($data)
+    {
+        echo "<pre>"; print_r($data); echo "</pre>";
     }
 }

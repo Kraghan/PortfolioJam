@@ -13,7 +13,7 @@
                             <label for="title">Titre de l'article</label>
                         </td>
                         <td>
-                            <input type="text" id="title" name="title" required>
+                            <input type="text" id="title" name="title" value="{% if article != null %} {{ article.title }} {% endif %}" required>
                         </td>
                     </tr>
                     <tr>
@@ -21,7 +21,7 @@
                             <label for="createdAt">Publier le (laisser vide pour le publier immédiatement)</label>
                         </td>
                         <td>
-                            <input type="text" id="createdAt" name="createdAt">
+                            <input type="text" id="createdAt" name="createdAt" value="{% if article != null %} {{ article.createdAt | date("m/d/Y") }} {% endif %}">
                         </td>
                     </tr>
                     <tr>
@@ -29,7 +29,7 @@
                             <label for="published">Cacher l'article (il ne sera pas visible en ligne)</label>
                         </td>
                         <td>
-                            <input type="checkbox" id="published" name="published">
+                            <input type="checkbox" id="published" name="published" {% if article != null %} {% if article.published == 0 %}checked{% endif %}{% endif %}>
                         </td>
                     </tr>
                     <tr>
@@ -37,11 +37,265 @@
                             <label for="accroche">Acroche de l'article</label>
                         </td>
                         <td>
-                            <textarea class="accroche" id="accroche" name="accroche"></textarea>
+                            <textarea class="accroche" id="accroche" name="accroche">{% if article != null %} {{ article.accroche }} {% endif %}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="link">Catégories</label>
+                        </td>
+                        <td>
+                            {% for categorie in categories %}
+                                <label>{{ categorie.name }} <input type="checkbox" name="categorie[]" value="{{ categorie.id }}"
+                                    {% if categoriesChecked != null %}
+                                        {% for checked in categoriesChecked %}
+                                            {% if checked.categoryId == categorie.id %}
+                                                checked
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}></label>
+                            {% endfor %}
                         </td>
                     </tr>
                 </table>
                 <br>
+
+                {% set cptParagraphe = 0 %}
+                {% set cptImage = 0 %}
+                {% set cptProg = 0 %}
+                {% set cptQuote = 0 %}
+                {% set cptVideo = 0 %}
+                {% set cptBlockQuote = 0 %}
+                {% set cptMultiImage = 0 %}
+                {% set cptList = 0 %}
+
+                {% if blocks != null %}
+                    {% for block in blocks %}
+                        {% if block.type == "paragraphe" %}
+                            {% set cptParagraphe = cptParagraphe + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Paragraphe {{ cptParagraphe }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='paragraphe[{{ cptParagraphe }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Texte</td>
+                                    <td>
+                                        <textarea id='paragraphe_{{ cptParagraphe }}' name='paragraphe[{{ cptParagraphe }}][texte]' rows='8' required>
+                                            {{ block.content }}
+                                        </textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "image" %}
+                            {% set cptImage = cptImage + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Image {{ cptImage }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='image[{{ cptImage }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Image</td>
+                                    <td>
+                                        <img src="/IMG/{{ block.content.filename }}" class="img-admin">
+                                        <input type='file' id='image_{{ cptImage }}' name='image[{{ cptImage }}][image]'>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Légende</td>
+                                    <td>
+                                        <input type='text' id='imageLegend_{{ cptImage }}' name='image[{{ cptImage }}][legend]' value="{{ block.content.legend }}" required>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "multimage" %}
+                            {% set cptMultiImage = cptMultiImage + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Plusieurs images {{ cptMultiImage }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='multiImage[{{ cptMultiImage }}][order]'>
+                            <table>
+                                {% set cpt = 0 %}
+                                {% for item in block.content %}
+                                    {% set cpt = cpt + 1 %}
+                                    <tr>
+                                        <td>Image {{ cpt }}</td>
+                                        <td>
+                                            <img src="/IMG/{{ item.filename }}" class="img-admin">
+                                            <input type='file' id='multiImage_{{ cptMultiImage }}' name='multiImage[{{ cptMultiImage }}][{{ cpt }}][image]'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Légende {{ cpt }}</td>
+                                        <td>
+                                            <input type='text' id='multiImageLegende_{{ cptMultiImage }}' name='multiImage[{{ cptMultiImage }}][{{ cpt }}][legend]' value="{{ item.legend }}" required>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            <tr id='insert_image_anchor_{{ cptMultiImage }}'>
+                                <td>Ajout d'image</td>
+                                <td>
+                                    <a class='btn btn-primary' id='multiImageButtonAdd_{{ cptMultiImage }}'>Ajouter une image</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            <input type='hidden' id='image_compteur_{{ cptMultiImage }}' value='{{ cpt }}'>
+
+                            <script>
+                                $("#multiImageButtonAdd_{{ cptMultiImage }}").click(function()
+                                {
+                                    var cpt = $("#image_compteur_{{ cptMultiImage }}").val();
+                                    console.log(cpt);
+                                    ++cpt;
+                                    console.log(cpt);
+                                    $("#image_compteur_{{ cptMultiImage }}").val(cpt);
+                                    $("#insert_image_anchor_{{ cptMultiImage }}").before("" +
+                                        "<tr>" +
+                                        "<td>Image "+cpt+"</td>" +
+                                        "<td>" +
+                                        "<input type='file' id='multiImage_{{ cptMultiImage }}' name='multiImage[{{ cptMultiImage }}]["+cpt+"][image]'>" +
+                                        "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                        "<td>Légende "+cpt+"</td>" +
+                                        "<td>" +
+                                        "<input type='text' id='multiImageLegende_{{ cptMultiImage }}' name='multiImage[{{ cptMultiImage }}]["+cpt+"][legend]' required>" +
+                                        "</td>" +
+                                        "<tr>");
+                                });
+                            </script>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "video" %}
+                            {% set cptVideo = cptVideo + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Vidéo {{ cptVideo }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='video[{{ cptVideo }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>URL</td>
+                                    <td>
+                                        <input type='text' id='videoUrl_{{ cptVideo }}' name='video[{{ cptVideo }}][url]' value="{{ block.content.url }}" required>
+                                        </td>
+                                    </tr>
+                                <tr>
+                                    <td>Légende</td>
+                                    <td>
+                                        <input type='text' id='videoLegend_{{ cptVideo }}' name='video[{{ cptVideo }}][legend]' value="{{ block.content.legend }}" required>
+                                        </td>
+                                    </tr>
+                                <tr>
+                                    <td>Thumb</td>
+                                    <td>
+                                        <img src="/IMG/{{ block.content.thumb }}" class="img-admin">
+                                        <input type='file' id='videoThumb_{{ cptVideo }}' name='video[{{ cptVideo }}][thumb]'>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "quote" %}
+                            {% set cptQuote = cptQuote + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Citation {{ cptQuote }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='quote[{{ cptQuote }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Phrase</td>
+                                    <td>
+                                        <input type='text' id='quote_{{ cptQuote }}' name='quote[{{ cptQuote }}][quote]' value="{{ block.content }}">
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "blockQuote" %}
+                            {% set cptBlockQuote = cptBlockQuote + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Block de citation {{ cptBlockQuote }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='blockQuote[{{ cptBlockQuote }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Texte</td>
+                                    <td>
+                                        <textarea id='blockQuote_{{ cptBlockQuote }}' name='blockQuote[{{ cptBlockQuote }}][texte]' rows='8' required>{{ block.content }}</textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "prog" %}
+                            {% set cptProg = cptProg + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Fragment de code {{ cptProg }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='prog[{{ cptProg }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Langage</td>
+                                    <td>
+                                        <select id='progLangage_{{ cptProg }}' name='prog[{{ cptProg }}][langage]'>
+                                            <option value='cpp' {% if block.content.langage == "cpp" %}selected{% endif %}>C++</option>
+                                            <option value='csharp' {% if block.content.langage == "csharp" %}selected{% endif %}>C#</option>
+                                            <option value='bash' {% if block.content.langage == "bash" %}selected{% endif %}>Bash</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>
+                                        <textarea id='prog_{{ cptProg }}' name='prog[{{ cptProg }}][texte]' rows='8' required>{{ block.content.texte }}</textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+
+                        {% if block.type == "liste" %}
+                            {% set cptList = cptList + 1 %}
+                            <div id="block_{{ block.ordering }}">
+                            <h3>Liste (un retour à la ligne pour chaque item) {{ cptList }} <a href="javascript:void(0);" class="delete_block" data-order="{{ block.ordering }}" data-id="{{ block.id }}">Supprimer le block</a></h3>
+                            <input type='hidden' value='{{ block.ordering }}' name='list[{{ cptList }}][order]'>
+                            <table>
+                                <tr>
+                                    <td>Liste</td>
+                                    <td>
+                                        <select id='listStyle_{{ cptList }}' name='list[{{ cptList }}][style]'>
+                                            <option value='' {% if block.content.style == "" %}selected{% endif %}>Points noirs</option>
+                                            <option value='list-style' {% if block.content.style == "list-style" %}selected{% endif %}>Numéros</option>
+                                            <option value='list-style-2' {% if block.content.style == "list-style-2" %}selected{% endif %}>Points blancs</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Liste</td>
+                                    <td>
+                                        <textarea id='list_{{ cptList }}' name='list[{{ cptList }}][items]' rows='8' required>
+                                            {% for item in block.content.items %}
+                                                {{ item }}
+                                            {% endfor %}
+                                        </textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 <h3 id="insert_anchor">Ajout d'un bloc de contenu</h3>
                 <table>
                     <tr>
@@ -79,7 +333,49 @@
         var nbmultiImage = 0;
         var nbBlockQuote = 0;
         var nbList = 0;
-        var order = 0;
+
+        {% set order = 0 %}
+        {% for block in blocks %}
+            {% if order < block.ordering %}
+                {% set order = block.ordering %}
+            {% endif %}
+
+            {% if block.type == "paragraphe" %}
+                nbParagraphe++;
+                CKEDITOR.replace("paragraphe_"+nbParagraphe);
+            {% endif %}
+
+            {% if block.type == "image" %}
+                nbImage++;
+            {% endif %}
+
+            {% if block.type == "video" %}
+                nbVideo++;
+            {% endif %}
+
+            {% if block.type == "quote" %}
+                nbQuote++;
+            {% endif %}
+
+            {% if block.type == "blockQuote" %}
+                nbBlockQuote++;
+                CKEDITOR.replace("blockQuote_"+nbParagraphe);
+            {% endif %}
+
+            {% if block.type == "multimage" %}
+                nbmultiImage++;
+            {% endif %}
+
+            {% if block.type == "prog" %}
+                nbProg++;
+            {% endif %}
+
+            {% if block.type == "liste" %}
+                nbList++;
+            {% endif %}
+        {% endfor %}
+
+        var order = {{ order }};
 
         $(document).ready(function()
         {
@@ -90,17 +386,17 @@
                 nbParagraphe++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Paragraphe " + nbParagraphe + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Paragraphe " + nbParagraphe + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='paragraphe["+nbParagraphe+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Texte</td>" +
                             "<td>" +
-                                "<textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"][texte]' rows='8'></textarea>" +
+                                "<textarea id='paragraphe_"+nbParagraphe+"' name='paragraphe["+nbParagraphe+"][texte]' rows='8' required></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
 
                 CKEDITOR.replace("paragraphe_"+nbParagraphe);
             });
@@ -110,23 +406,23 @@
                 nbImage++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Image " + nbImage + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Image " + nbImage + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='image["+nbImage+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Image</td>" +
                             "<td>" +
-                                "<input type='file' id='image_"+nbImage+"' name='image["+nbImage+"][image]'>" +
+                                "<input type='file' id='image_"+nbImage+"' name='image["+nbImage+"][image]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Légende</td>" +
                             "<td>" +
-                                "<input type='text' id='imageLegend_"+nbImage+"' name='image["+nbImage+"][legend]'>" +
+                                "<input type='text' id='imageLegend_"+nbImage+"' name='image["+nbImage+"][legend]' required>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
             });
 
             $("#add_video").click(function()
@@ -134,29 +430,29 @@
                 nbVideo++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Vidéo " + nbVideo + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Vidéo " + nbVideo + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='video["+nbVideo+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>URL</td>" +
                             "<td>" +
-                                "<input type='text' id='videoUrl_"+nbVideo+"' name='video["+nbVideo+"][url]'>" +
+                                "<input type='text' id='videoUrl_"+nbVideo+"' name='video["+nbVideo+"][url]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Légende</td>" +
                             "<td>" +
-                                "<input type='text' id='videoLegend_"+nbVideo+"' name='video["+nbVideo+"][legend]'>" +
+                                "<input type='text' id='videoLegend_"+nbVideo+"' name='video["+nbVideo+"][legend]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Thumb</td>" +
                             "<td>" +
-                                "<input type='file' id='videoThumb_"+nbVideo+"' name='video["+nbVideo+"][thumb]'>" +
+                                "<input type='file' id='videoThumb_"+nbVideo+"' name='video["+nbVideo+"][thumb]' required>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
             });
 
             $("#add_quote").click(function()
@@ -164,17 +460,17 @@
                 nbQuote++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Citation " + nbQuote + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Citation " + nbQuote + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='quote["+nbQuote+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Phrase</td>" +
                             "<td>" +
-                                "<input type='text' id='quote_"+nbQuote+"' name='quote["+nbQuote+"][quote]'>" +
+                                "<input type='text' id='quote_"+nbQuote+"' name='quote["+nbQuote+"][quote]' required>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
             });
 
             $("#add_prog").click(function()
@@ -182,29 +478,28 @@
                 nbProg++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Fragment de code " + nbProg + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Fragment de code " + nbProg + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='prog["+nbProg+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Langage</td>" +
                             "<td>" +
-                                "<select id='progLangage_"+nbProg+"' name='prog["+nbProg+"][langage]'>" +
-                                    "<option value='Cpp'>C++</option>" +
-                                    "<option value='CSharp'>C#</option>" +
-                                    "<option value='Bash'>Bash</option>" +
+                                "<select id='progLangage_"+nbProg+"' name='prog["+nbProg+"][langage]' required>" +
+                                    "<option value='cpp'>C++</option>" +
+                                    "<option value='csharp'>C#</option>" +
+                                    "<option value='bash'>Bash</option>" +
                                 "</select>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Code</td>" +
                             "<td>" +
-                                "<textarea id='prog_"+nbProg+"' name='prog["+nbProg+"][texte]' rows='8'></textarea>" +
+                                "<textarea id='prog_"+nbProg+"' name='prog["+nbProg+"][texte]' rows='8' required></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
 
-                CKEDITOR.replace("prog_"+nbProg);
             });
 
             $("#add_multiImage").click(function()
@@ -212,20 +507,20 @@
                 nbmultiImage++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Plusieurs images " + nbmultiImage + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Plusieurs images " + nbmultiImage + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='multiImage["+nbmultiImage+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Image 1</td>" +
                             "<td>" +
-                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][image]'>" +
+                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][image]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Légende 1</td>" +
                             "<td>" +
-                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][legend]'>" +
+                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"][1][legend]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr id='insert_image_anchor_"+nbmultiImage+"'>" +
@@ -235,7 +530,7 @@
                             "</td>" +
                         "</tr>" +
                     "</table><br>" +
-                    "<input type='hidden' id='image_compteur_"+nbmultiImage+"' value='1'>");
+                    "<input type='hidden' id='image_compteur_"+nbmultiImage+"' value='1'></div>");
 
                 $("#multiImageButtonAdd_"+nbmultiImage).click(function()
                 {
@@ -248,13 +543,13 @@
                         "<tr>" +
                             "<td>Image "+cpt+"</td>" +
                             "<td>" +
-                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][image]'>" +
+                                "<input type='file' id='multiImage_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][image]' required>" +
                             "</td>" +
                         "</tr>" +
                         "<tr>" +
                             "<td>Légende "+cpt+"</td>" +
                             "<td>" +
-                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][legend]'>" +
+                                "<input type='text' id='multiImageLegende_"+nbmultiImage+"' name='multiImage["+nbmultiImage+"]["+cpt+"][legend]' required>" +
                             "</td>" +
                         "<tr>");
                 });
@@ -265,17 +560,17 @@
                 nbBlockQuote++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Block de citation " + nbBlockQuote + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Block de citation " + nbBlockQuote + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='blockQuote["+nbBlockQuote+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Texte</td>" +
                             "<td>" +
-                                "<textarea id='blockQuote_"+nbBlockQuote+"' name='blockQuote["+nbBlockQuote+"][texte]' rows='8'></textarea>" +
+                                "<textarea id='blockQuote_"+nbBlockQuote+"' name='blockQuote["+nbBlockQuote+"][texte]' rows='8' required></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
 
                 CKEDITOR.replace("blockQuote_"+nbBlockQuote);
             });
@@ -285,14 +580,14 @@
                 nbList++;
                 order++;
 
-                $('#insert_anchor').before(" " +
-                    "<h3>Liste (un retour à la ligne pour chaque item) " + nbList + "</h3>" +
+                $('#insert_anchor').before("<div id='block_"+order+"'>" +
+                    "<h3>Liste (un retour à la ligne pour chaque item) " + nbList + "<a href='javascript:void(0);' class='delete_block' data-order='"+order+"'>Supprimer le block</a></h3>" +
                     "<input type='hidden' value='"+order+"' name='list["+nbList+"][order]'>" +
                     "<table>" +
                         "<tr>" +
                             "<td>Liste</td>" +
                             "<td>" +
-                                "<select id='listStyle_"+nbList+"' name='list["+nbList+"][style]'>" +
+                                "<select id='listStyle_"+nbList+"' name='list["+nbList+"][style]' required>" +
                                     "<option value=''>Points noirs</option> "+
                                     "<option value='list-style'>Numéros</option> "+
                                     "<option value='list-style-2'>Points blancs</option> "+
@@ -302,11 +597,27 @@
                         "<tr>" +
                             "<td>Liste</td>" +
                             "<td>" +
-                                "<textarea id='list_"+nbList+"' name='list["+nbList+"][items]' rows='8'></textarea>" +
+                                "<textarea id='list_"+nbList+"' name='list["+nbList+"][items]' rows='8' required></textarea>" +
                             "</td>" +
                         "</tr>" +
-                    "</table><br>");
+                    "</table><br></div>");
             });
+        });
+
+        $(".delete_block").on("click",document,function()
+        {
+            if($(this).data("id") !== false)
+            {
+                $.ajax({
+                    url: "/admin/delete_block/"+$(this).data("id"),
+                    method: "post",
+                    success: function(e)
+                    {
+                        console.log(e);
+                    }
+                });
+            }
+            $("#block_"+$(this).data("order")).remove();
         });
 
     </script>

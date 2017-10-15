@@ -5,12 +5,12 @@ namespace DevLogBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ArticleKeywordMm
+ * ArticleCategoriesMm
  *
- * @ORM\Table(name="article_keyword_mm")
- * @ORM\Entity(repositoryClass="DevLogBundle\Repository\ArticleKeywordMmRepository")
+ * @ORM\Table(name="article_categories_mm")
+ * @ORM\Entity(repositoryClass="DevLogBundle\Repository\ArticleCategoriesMmRepository")
  */
-class ArticleKeywordMm
+class ArticleCategoriesMm
 {
     /**
      * @var int
@@ -31,9 +31,9 @@ class ArticleKeywordMm
     /**
      * @var int
      *
-     * @ORM\Column(name="categorieId", type="integer")
+     * @ORM\Column(name="categoryId", type="integer")
      */
-    private $categorieId;
+    private $categoryId;
 
 
     /**
@@ -51,7 +51,7 @@ class ArticleKeywordMm
      *
      * @param integer $articleId
      *
-     * @return ArticleKeywordMm
+     * @return ArticleCategoriesMm
      */
     public function setArticleId($articleId)
     {
@@ -71,27 +71,27 @@ class ArticleKeywordMm
     }
 
     /**
-     * Set categorieId
+     * Set categoryId
      *
-     * @param integer $categorieId
+     * @param int $categoryId
      *
-     * @return ArticleKeywordMm
+     * @return ArticleCategoriesMm
      */
-    public function setCategorieId($categorieId)
+    public function setCategoryId($categoryId)
     {
-        $this->categorieId = $categorieId;
+        $this->categoryId = $categoryId;
 
         return $this;
     }
 
     /**
-     * Get categorieId
+     * Get categoryId
      *
      * @return int
      */
-    public function getCategorieId()
+    public function getCategoryId()
     {
-        return $this->categorieId;
+        return $this->categoryId;
     }
 }
 

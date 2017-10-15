@@ -25,7 +25,69 @@
             <!-- Post Detail End -->
 
             {% for block in blocks %}
-                {{ block.content | raw }}
+                {% if block.type == "paragraphe" %}
+                    {{ block.content | raw }}
+                {% endif %}
+
+                {% if block.type == "image" %}
+                    <div class="post-image margin-top-40 margin-bottom-40">
+                        <img src="/IMG/{{ block.content.filename }}" alt="">
+                        <p>{{ block.content.legend }}</p>
+                    </div>
+                {% endif %}
+
+                {% if block.type == "video" %}
+                    <div class="video-box margin-top-40 margin-bottom-40">
+                        <div class="video-tutorial">
+                            <a class="video-popup" href="{{ block.content.url }}" title="{{ block.content.legend }}">
+                            <img src="/IMG/{{ block.content.thumb }}" alt="">
+                            </a>
+                        </div>
+                        <p>{{ block.content.legend }}</p>
+                    </div>
+                {% endif %}
+
+                {% if block.type == "quote" %}
+                    <div class="post-quote margin-top-40 margin-bottom-40">
+                        <blockquote>{{ block.content }}</blockquote>
+                    </div>
+                {% endif %}
+
+                {% if block.type == "blockQuote" %}
+                    <div class="post-quote margin-top-40 margin-bottom-40">
+                        <blockquote><p>{{ block.content }}</p></blockquote>
+                    </div>
+                {% endif %}
+
+                {% if block.type == "prog" %}
+                    <div class="margin-top-40 margin-bottom-40">
+                        <pre class="brush: {{ block.content.langage }}">
+                            {{ block.content.texte }}
+                        </pre>
+                    </div>
+                {% endif %}
+
+                {% if block.type == "multimage" %}
+                    <div class="row margin-top-40 margin-bottom-40">';
+                        {% for image in block.content.images %}
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="/IMG/{{ image.filename }}" class="image-popup" title="{{ image.legend }}">
+                                    <img src="/IMG/{{ image.filename }}" class="img-responsive" alt="">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if block.type == "list" %}
+                    <div class="list {{ block.content.style }}">
+                        <ul>
+                            {% for item in block.content.items %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             {% endfor %}
 
             <!-- Post Author Bio Box Start -->
@@ -51,7 +113,16 @@
                 <div class="row">
                     {% for article in articles %}
                         <div class="col-md-4 col-sm-6 col-xs-12">
-                            <a href="{{ url("post", {"id" : article.id}) }}"><p>{{ article.title }}</p></a>
+                            <a href="{{ url("post", {"id" : article.slug}) }}"><p>{{ article.title }}</p></a>
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <h3>Categories related</h3>
+                <div class="row">
+                    {% for cat in categories %}
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="{{ url("homeblog", {"id" : cat.slug}) }}"><p>{{ cat.name }}</p></a>
                         </div>
                     {% endfor %}
 
@@ -67,56 +138,12 @@
                 <h3>Discuss about post</h3>
 
 
-                <!-- Disqus Code Start  (Please Note: Disqus will not be load on local, You have to upload it on server.)-->
-                <div id="disqus_thread"></div>
-                <script>
-
-                    /***  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS. LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables.
-
-                     var disqus_config = function () {
-							this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-							this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-							};
-                     */
-
-                    (function() { // DON'T EDIT BELOW THIS LINE
-                        var d = document, s = d.createElement('script');
-                        s.src = '//uipasta.disqus.com/embed.js';   // Please change the url from your own disqus id
-                        s.setAttribute('data-timestamp', +new Date());
-                        (d.head || d.body).appendChild(s);
-                    })();
-                </script>
-                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                <!-- Disqus Code End -->
-
             </div>
             <!-- Post Comment (Disqus) End -->
 
 
 
         </div>
-    </div>
-
-    </div>
-
-
-
-    <!-- Subscribe Form Start -->
-    <div class="col-md-8 col-md-offset-2">
-        <form id="mc-form" method="post" action="http://uipasta.us14.list-manage.com/subscribe/post?u=854825d502cdc101233c08a21&amp;id=86e84d44b7">
-
-            <div class="subscribe-form margin-top-20">
-                <input id="mc-email" type="email" placeholder="Email Address" class="text-input">
-                <button class="submit-btn" type="submit">Submit</button>
-            </div>
-            <p>Subscribe to my weekly newsletter</p>
-            <label for="mc-email" class="mc-label"></label>
-        </form>
-
-    </div>
-    <!-- Subscribe Form End -->
-
-
     </div>
 
 {% endblock %}

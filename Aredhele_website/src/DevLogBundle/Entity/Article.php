@@ -156,6 +156,16 @@ class Article
         return $this->accroche;
     }
 
+    public function getSlug()
+    {
+        $name = $this->title;
+        $name = str_replace("+","plus", $name);
+        $name = str_replace("-","minus", $name);
+        $name = str_replace(" ","_", $name);
+
+        return substr($name,0,200);
+    }
+
     public function hasHeader()
     {
         return false;

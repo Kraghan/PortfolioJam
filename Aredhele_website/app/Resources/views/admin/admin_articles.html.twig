@@ -1,0 +1,39 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block body %}
+
+    {% if articles|length != 0 %}
+        <div class="well">
+            <h3>Articles existantes</h3>
+            <div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            Titre
+                        </th>
+                        <th>
+                            Est publié
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.title }}</td>
+                            <td>{% if article.published %} Oui {% else %} Non {% endif %}</td>
+                            <td>
+                                <a href="{{ url("del_article" ,{id : article.id} ) }}" title="Supprimer">Supprimer</a> /
+                                <a href="{{ url("article", {id : article.id}) }}" title="Editer">Editer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

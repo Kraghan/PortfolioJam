@@ -4,6 +4,7 @@ namespace AdminBundle\Controller;
 
 use DevLogBundle\Entity\Article;
 use DevLogBundle\Entity\ArticleBlock;
+use DevLogBundle\Entity\ArticleCategoriesMm;
 use PortfolioBundle\Entity\Categorie;
 use PortfolioBundle\Entity\Project;
 use PortfolioBundle\Entity\ProjectCategoriesMm;
@@ -539,7 +540,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/article", name="article")
+     * @Route("/article/{id}", defaults={"id" :""}, name="article")
      */
     public function articleAction(Request $request)
     {
@@ -551,16 +552,36 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
+        if($request->get("id") != "")
+        {
+            $article = $em->getRepository("DevLogBundle:Article")
+                ->findOneBy(array("id" => $request->get("id")));
+            $blocks = $em->getRepository("DevLogBundle:ArticleBlock")
+                ->findBy(array("articleId" => $request->get("id")), array("ordering" => "ASC"));
+            $categoriesChecked = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+                ->findBy(array("articleId" => $article->getId()));
+        }
+
         if($request->isMethod("POST"))
         {
-            $article = new Article();
+            if(!isset($article))
+                $article = new Article();
             $article->setTitle($request->get("title"));
             $article->setCreatedAt(new \DateTime($request->get("createdAt")));
             $article->setAccroche($request->get("accroche"));
-            $article->setPublished($request->get("published") == "on" ? true : false);
+            $article->setPublished($request->get("published") == "on" ? false : true);
 
             $em->persist($article);
             $em->flush();
+
+            if($request->get("categorie")) {
+                foreach ($request->get("categorie") as $cat) {
+                    $mm = new ArticleCategoriesMm();
+                    $mm->setArticleId($article->getId());
+                    $mm->setCategoryId($cat);
+                    $em->persist($mm);
+                }
+            }
 
             $paragraphes = $request->get("paragraphe");
             $images = $request->get("image");
@@ -571,170 +592,258 @@ class DefaultController extends Controller
             $blockQuotes = $request->get("blockQuote");
             $list = $request->get("list");
 
-            foreach ($paragraphes as $paragraphe)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("paragraphe");
-                $block->setOrdering(intval($paragraphe["order"]));
+            if($paragraphes) {
+                foreach ($paragraphes as $paragraphe) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $paragraphe["order"], "type" => "paragraphe", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("paragraphe");
+                    $block->setOrdering($paragraphe["order"]);
 
-                $block->setContent($paragraphe["texte"]);
-                $em->persist($block);
-            }
-
-            foreach ($images as $key => $image)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("paragraphe");
-                $block->setOrdering($image["order"]);
-                if($_FILES["image"]["name"][$key]["image"] != "")
-                {
-                    $uploadRes = $this->upload2("image", "article_".$article->getId().'_image_'.$key,$key,"image");
-                    if ($uploadRes["result"]) {
-                        $session->getFlashBag()->add('success', "Upload réussie !");
-                    } else
-                        $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
-
-                    $content = '<div class="post-image margin-top-40 margin-bottom-40">
-                        <img src="/IMG/'.$uploadRes["filename"].'" alt="">
-                        <p>' . $image["legend"] . '</p>
-                    </div>';
+                    $block->setContent($paragraphe["texte"]);
+                    $em->persist($block);
                 }
-
-                $block->setContent($content);
-                $em->persist($block);
             }
 
-            foreach ($videos as $key => $video)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("video");
-                $block->setOrdering($video["order"]);
-                if($_FILES["video"]["name"][$key]["thumb"] != "")
-                {
-                    $uploadRes = $this->upload2("video", "article_" . $article->getId() . '_video_' . $key, $key, "thumb");
-                    if ($uploadRes["result"]) {
-                        $session->getFlashBag()->add('success', "Upload réussie !");
-                    } else
-                        $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
-
-                    $content = '<div class="video-box margin-top-40 margin-bottom-40">
-                        <div class="video-tutorial">
-                            <a class="video-popup" href="' . $video["url"] . '" title="' . $video["url"] . '">
-                                <img src="/IMG/'.$uploadRes["filename"].'" alt="">
-                            </a>
-                        </div>
-                        <p>' . $video["legend"] . '</p>
-                    </div>';
-                }
-
-                $block->setContent($content);
-                $em->persist($block);
-            }
-
-            foreach ($quotes as $quote)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("quote");
-                $block->setOrdering($quote["order"]);
-
-                $content = '<div class="post-quote margin-top-40 margin-bottom-40">
-                    <blockquote>'.$quote["quote"].'</blockquote>
-                </div>';
-
-                $block->setContent($content);
-                $em->persist($block);
-            }
-
-            foreach ($progs as $prog)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("prog");
-                $block->setOrdering($prog["order"]);
-                $content = '<div class="margin-top-40 margin-bottom-40">
-                    <pre class="brush: '.$prog["langage"].'">
-                        '.$prog["texte"].'
-                    </pre>
-                </div>';
-
-                $block->setContent($content);
-                $em->persist($block);
-            }
-
-            foreach ($blockQuotes as $blockQuote)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("blockQuote");
-                $block->setOrdering($blockQuote["order"]);
-                $content = '<blockquote class="margin-top-40 margin-bottom-40">
-                    <p>'.$blockQuote["texte"].'</p>
-                </blockquote>';
-
-                $block->setContent($content);
-                $em->persist($block);
-            }
-
-            foreach ($list as $l)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("liste");
-                $block->setOrdering($l["order"]);
-                $content = '<div class="list '.$l['style'].'">
-                    <ul>';
-                foreach (explode("\n",$l["items"]) as $item)
-                        $content.= '<li>'.$item.'</li>';
-                $content .= '</ul>
-                </div>';
-
-                $block->setContent($content);
-                $em->persist($block);
-            }
-
-            foreach ($multimages as $key2 => $multimage)
-            {
-                $block = new ArticleBlock();
-                $block->setArticleId($article->getId());
-                $block->setType("multimage");
-                $block->setOrdering($multimage["order"]);
-                $content = '<div class="row margin-top-40 margin-bottom-40">';
-                foreach ($multimage as $key => $value)
-                {
-                    if($key == "order")
-                        continue;
-
-                    if($_FILES["multiImage"]["name"][$key2][$key]["image"] != "")
-                    {
-                        $uploadRes = $this->upload3("multiImage", "article_" . $article->getId() . '_multiimage_' . $key2 . '_'.$key, $key2, $key, "image");
+            if($images) {
+                foreach ($images as $key => $image) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $image["order"], "type" => "image", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("image");
+                    $block->setOrdering($image["order"]);
+                    $content = array("legend" => $image["legend"]);
+                    if ($_FILES["image"]["name"][$key]["image"] != "") {
+                        $uploadRes = $this->upload2("image", "article_" . $article->getId() . '_image_' . $key, $key, "image");
                         if ($uploadRes["result"]) {
                             $session->getFlashBag()->add('success', "Upload réussie !");
                         } else
                             $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
 
-
-                        $content .= '<div class="col-md-4 col-sm-6 col-xs-12">
-                            <a href="/IMG/' .$uploadRes["filename"].'" class="image-popup" title="' . $value['legend'] . '">
-                                <img src="/IMG/' .$uploadRes["filename"].'" class="img-responsive" alt="">
-                            </a>
-                        </div>';
+                        $content["filename"] = $uploadRes["filename"];
                     }
-                }
-                $content .= '</div>';
+                    else
+                    {
+                        $tmp = (array) $block->getContent();
+                        $content["filename"] = isset($tmp["filename"]) ? $tmp["filename"] : "";
+                    }
 
-                $block->setContent($content);
-                $em->persist($block);
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($videos) {
+                foreach ($videos as $key => $video) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $video["order"], "type" => "video", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("video");
+                    $block->setOrdering($video["order"]);
+                    $content = array("url" => $video["url"], "legend" => $video["legend"]);
+                    if ($_FILES["video"]["name"][$key]["thumb"] != "") {
+                        $uploadRes = $this->upload2("video", "article_" . $article->getId() . '_video_' . $key, $key, "thumb");
+                        if ($uploadRes["result"]) {
+                            $session->getFlashBag()->add('success', "Upload réussie !");
+                        } else
+                            $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
+
+                        $content["thumb"] = $uploadRes["filename"];
+                    }
+                    else
+                    {
+                        $tmp = (array) $block->getContent();
+                        $content["thumb"] = isset($tmp["thumb"]) ? $tmp["thumb"] : "";
+                    }
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($quotes) {
+                foreach ($quotes as $quote) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $quote["order"], "type" => "quote", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("quote");
+                    $block->setOrdering($quote["order"]);
+                    $content = $quote["quote"];
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($progs) {
+                foreach ($progs as $prog) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $prog["order"], "type" => "prog", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("prog");
+                    $block->setOrdering($prog["order"]);
+                    $content = array("langage" => $prog["langage"], "texte" => $prog["texte"]);
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($blockQuotes) {
+                foreach ($blockQuotes as $blockQuote) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $blockQuote["order"], "type" => "blockQuote", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("blockQuote");
+                    $block->setOrdering($blockQuote["order"]);
+                    $content = $blockQuote["texte"];
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($list) {
+                foreach ($list as $l) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $l["order"], "type" => "liste", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("liste");
+                    $block->setOrdering($l["order"]);
+                    $content = array("items" => explode("\n", $l["items"]), "style" => $l["style"]);
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
+            }
+
+            if($multimages) {
+                foreach ($multimages as $key2 => $multimage) {
+                    $block = $em->getRepository("DevLogBundle:ArticleBlock")
+                        ->findOneBy(array("ordering" => $multimage["order"], "type" => "multimage", "articleId" => $article->getId()));
+                    if(!$block)
+                        $block = new ArticleBlock();
+                    $block->setArticleId($article->getId());
+                    $block->setType("multimage");
+                    $block->setOrdering($multimage["order"]);
+                    $content = array();
+                    foreach ($multimage as $key => $value) {
+                        if ($key == "order")
+                            continue;
+
+                        if ($_FILES["multiImage"]["name"][$key2][$key]["image"] != "") {
+                            $uploadRes = $this->upload3("multiImage", "article_" . $article->getId() . '_multiimage_' . $key2 . '_' . $key, $key2, $key, "image");
+                            if ($uploadRes["result"]) {
+                                $session->getFlashBag()->add('success', "Upload réussie !");
+                            } else
+                                $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
+
+                            $content[] = array("filename" => $uploadRes["filename"], "legend" => $value["legend"]);
+                        }
+                        else
+                        {
+                            $tmp = (array) $block->getContent();
+                            $content[] = array("filename" => $tmp[$key - 1]->filename, "legend" => $value["legend"]);
+                        }
+
+                    }
+
+                    $block->setContent($content);
+                    $em->persist($block);
+                }
             }
             $em->flush();
+            return $this->redirect($this->generateUrl('article', array('id' => $article->getId())));
         }
 
-        return $this->render('admin/admin_article.html.twig');
+        $categories = $em->getRepository("PortfolioBundle:Categorie")
+            ->findAll();
+
+        return $this->render('admin/admin_article.html.twig', ["categories" => $categories,
+            "article" => isset($article) ? $article : null,
+            "blocks" => isset($blocks) ? $blocks : null ,
+            "categoriesChecked" => isset($categoriesChecked) ? $categoriesChecked : null
+            ]);
     }
 
+    /**
+     * @Route("/articles", name="articles")
+     */
+    public function articlesAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request, false);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $categories = $em->getRepository("DevLogBundle:Article")
+            ->findAll();
+
+        return $this->render('admin/admin_articles.html.twig', ["articles" => $categories]);
+    }
+
+    /**
+     * @Route("/del_article/{id}", name="del_article")
+     */
+    public function delArticleAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request, false);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $article = $em->getRepository("DevLogBundle:Article")
+            ->findOneBy(array('id' => $request->get("id")));
+
+        $em->remove($article);
+        $em->flush();
+
+        $session->getFlashBag()->add('success', "Suppression réussie !");
+
+        return $this->redirectToRoute('articles');
+    }
+
+    /**
+     * @Route("/delete_block/{id}", name="delete_block")
+     */
+    public function delBlockAction(Request $request)
+    {
+        $retour = $this->checkConnexion($request, false);
+        if(!$retour[0])
+            return $retour[1];
+
+        $session = $request->getSession();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $block = $em->getRepository("DevLogBundle:ArticleBlock")
+            ->findOneBy(array('id' => $request->get("id")));
+
+        $em->remove($block);
+        $em->flush();
+
+        return json_encode(array("result" => true));
+    }
 
     private function upload($inputName, $filename, $uploaddir = "", $fileType = ["image/jpg","image/jpeg","image/png"])
     {

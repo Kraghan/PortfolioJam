@@ -116,7 +116,7 @@ class ArticleBlock
      */
     public function setContent($content)
     {
-        $this->content = $content;
+        $this->content = json_encode($content);
 
         return $this;
     }
@@ -128,7 +128,7 @@ class ArticleBlock
      */
     public function getContent()
     {
-        return $this->content;
+        return json_decode($this->content,false);
     }
 
     /**
