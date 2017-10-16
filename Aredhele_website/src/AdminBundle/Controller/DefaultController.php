@@ -566,13 +566,20 @@ class DefaultController extends Controller
         {
             if(!isset($article))
                 $article = new Article();
-            $article->setTitle($request->get("title"));
-            $article->setCreatedAt(new \DateTime($request->get("createdAt")));
-            $article->setAccroche($request->get("accroche"));
+            $article->setTitle($this->clear($request->get("title")));
+            $article->setCreatedAt(new \DateTime($this->clear($request->get("createdAt"))));
+            $article->setAccroche($this->clear($request->get("accroche")));
             $article->setPublished($request->get("published") == "on" ? false : true);
 
             $em->persist($article);
             $em->flush();
+
+            $cats = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+                ->findBy(array("articleId" => $article->getId()));
+
+            if($cats)
+                foreach ($cats as $c)
+                    $em->remove($c);
 
             if($request->get("categorie")) {
                 foreach ($request->get("categorie") as $cat) {
@@ -602,7 +609,7 @@ class DefaultController extends Controller
                     $block->setType("paragraphe");
                     $block->setOrdering($paragraphe["order"]);
 
-                    $block->setContent($paragraphe["texte"]);
+                    $block->setContent($this->clear($paragraphe["texte"]));
                     $em->persist($block);
                 }
             }
@@ -616,7 +623,7 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("image");
                     $block->setOrdering($image["order"]);
-                    $content = array("legend" => $image["legend"]);
+                    $content = array("legend" => $this->clear($image["legend"]));
                     if ($_FILES["image"]["name"][$key]["image"] != "") {
                         $uploadRes = $this->upload2("image", "article_" . $article->getId() . '_image_' . $key, $key, "image");
                         if ($uploadRes["result"]) {
@@ -624,12 +631,12 @@ class DefaultController extends Controller
                         } else
                             $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
 
-                        $content["filename"] = $uploadRes["filename"];
+                        $content["filename"] = $this->clear($uploadRes["filename"]);
                     }
                     else
                     {
                         $tmp = (array) $block->getContent();
-                        $content["filename"] = isset($tmp["filename"]) ? $tmp["filename"] : "";
+                        $content["filename"] = isset($tmp["filename"]) ? $this->clear($tmp["filename"]) : "";
                     }
 
                     $block->setContent($content);
@@ -646,7 +653,7 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("video");
                     $block->setOrdering($video["order"]);
-                    $content = array("url" => $video["url"], "legend" => $video["legend"]);
+                    $content = array("url" => $this->clear($video["url"]), "legend" => $this->clear($video["legend"]));
                     if ($_FILES["video"]["name"][$key]["thumb"] != "") {
                         $uploadRes = $this->upload2("video", "article_" . $article->getId() . '_video_' . $key, $key, "thumb");
                         if ($uploadRes["result"]) {
@@ -654,12 +661,12 @@ class DefaultController extends Controller
                         } else
                             $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
 
-                        $content["thumb"] = $uploadRes["filename"];
+                        $content["thumb"] = $this->clear($uploadRes["filename"]);
                     }
                     else
                     {
                         $tmp = (array) $block->getContent();
-                        $content["thumb"] = isset($tmp["thumb"]) ? $tmp["thumb"] : "";
+                        $content["thumb"] = isset($tmp["thumb"]) ? $this->clear($tmp["thumb"]) : "";
                     }
 
                     $block->setContent($content);
@@ -676,7 +683,7 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("quote");
                     $block->setOrdering($quote["order"]);
-                    $content = $quote["quote"];
+                    $content = $this->clear($quote["quote"]);
 
                     $block->setContent($content);
                     $em->persist($block);
@@ -692,7 +699,7 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("prog");
                     $block->setOrdering($prog["order"]);
-                    $content = array("langage" => $prog["langage"], "texte" => $prog["texte"]);
+                    $content = array("langage" => $this->clear($prog["langage"]), "texte" => $this->clear($prog["texte"]));
 
                     $block->setContent($content);
                     $em->persist($block);
@@ -708,7 +715,7 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("blockQuote");
                     $block->setOrdering($blockQuote["order"]);
-                    $content = $blockQuote["texte"];
+                    $content = $this->clear($blockQuote["texte"]);
 
                     $block->setContent($content);
                     $em->persist($block);
@@ -724,8 +731,10 @@ class DefaultController extends Controller
                     $block->setArticleId($article->getId());
                     $block->setType("liste");
                     $block->setOrdering($l["order"]);
-                    $content = array("items" => explode("\n", $l["items"]), "style" => $l["style"]);
-
+                    $items = array();
+                    foreach (explode("\n", $l["items"]) as $item)
+                        $items[] = $this->clear($item);
+                    $content = array("items" => $items, "style" => $l["style"]);
                     $block->setContent($content);
                     $em->persist($block);
                 }
@@ -752,12 +761,12 @@ class DefaultController extends Controller
                             } else
                                 $session->getFlashBag()->add('error', 'Upload error : ' . $uploadRes["message"]);
 
-                            $content[] = array("filename" => $uploadRes["filename"], "legend" => $value["legend"]);
+                            $content[] = array("filename" => $this->clear($uploadRes["filename"]), "legend" => $this->clear($value["legend"]));
                         }
                         else
                         {
                             $tmp = (array) $block->getContent();
-                            $content[] = array("filename" => $tmp[$key - 1]->filename, "legend" => $value["legend"]);
+                            $content[] = array("filename" => $this->clear($tmp[$key - 1]->filename), "legend" => $this->clear($value["legend"]));
                         }
 
                     }
@@ -814,6 +823,18 @@ class DefaultController extends Controller
 
         $article = $em->getRepository("DevLogBundle:Article")
             ->findOneBy(array('id' => $request->get("id")));
+
+        $blocks = $em->getRepository("DevLogBundle:ArticleBlock")
+            ->findBy(array("articleId" => $article->getId()));
+
+        $mms = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+            ->findBy(array("articleId" => $article->getId()));
+
+        foreach ($blocks as $block)
+            $em->remove($block);
+
+        foreach ($mms as $mm)
+            $em->remove($mm);
 
         $em->remove($article);
         $em->flush();
@@ -1119,6 +1140,11 @@ class DefaultController extends Controller
     private function d($data)
     {
         echo "<pre>"; print_r($data); echo "</pre>";
+    }
+
+    private function clear($d)
+    {
+        return trim(rtrim($d));
     }
 
 }

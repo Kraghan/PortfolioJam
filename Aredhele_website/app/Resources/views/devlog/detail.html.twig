@@ -3,7 +3,7 @@
 {% block body %}
 
     <div class="sub-title">
-        <a href="index.html" title="Go to Home Page"><h2>Back Home</h2></a>
+        <a href="{{ url("homeblog") }}" title="Go to Home Page"><h2>Back Home</h2></a>
         <a href="#comment" class="smoth-scroll"><i class="icon-bubbles"></i></a>
     </div>
 
@@ -20,7 +20,7 @@
 
             <!-- Post Detail Start -->
             <div class="post-info">
-                <span>{{ mainArticle.createdAt | date("F d, Y") }} / by <a href="#" target="_blank">Vincent Calisto</a></span>
+                <span>{{ mainArticle.createdAt | date("F d, Y") }} / by <a href="{{ url("homepage") }}" target="_blank">Vincent Calisto</a></span>
             </div>
             <!-- Post Detail End -->
 
@@ -61,15 +61,13 @@
 
                 {% if block.type == "prog" %}
                     <div class="margin-top-40 margin-bottom-40">
-                        <pre class="brush: {{ block.content.langage }}">
-                            {{ block.content.texte }}
-                        </pre>
+                        <pre class="brush: {{ block.content.langage }}">{{ block.content.texte }}</pre>
                     </div>
                 {% endif %}
 
                 {% if block.type == "multimage" %}
-                    <div class="row margin-top-40 margin-bottom-40">';
-                        {% for image in block.content.images %}
+                    <div class="row margin-top-40 margin-bottom-40">
+                        {% for image in block.content %}
                             <div class="col-md-4 col-sm-6 col-xs-12">
                                 <a href="/IMG/{{ image.filename }}" class="image-popup" title="{{ image.legend }}">
                                     <img src="/IMG/{{ image.filename }}" class="img-responsive" alt="">

@@ -13,7 +13,7 @@
                             <label for="title">Titre de l'article</label>
                         </td>
                         <td>
-                            <input type="text" id="title" name="title" value="{% if article != null %} {{ article.title }} {% endif %}" required>
+                            <input type="text" id="title" name="title" value="{% if article != null %}{{ article.title }}{% endif %}" required>
                         </td>
                     </tr>
                     <tr>
@@ -21,7 +21,7 @@
                             <label for="createdAt">Publier le (laisser vide pour le publier immédiatement)</label>
                         </td>
                         <td>
-                            <input type="text" id="createdAt" name="createdAt" value="{% if article != null %} {{ article.createdAt | date("m/d/Y") }} {% endif %}">
+                            <input type="text" id="createdAt" name="createdAt" value="{% if article != null %}{{ article.createdAt | date("m/d/Y") }}{% endif %}">
                         </td>
                     </tr>
                     <tr>
@@ -29,7 +29,7 @@
                             <label for="published">Cacher l'article (il ne sera pas visible en ligne)</label>
                         </td>
                         <td>
-                            <input type="checkbox" id="published" name="published" {% if article != null %} {% if article.published == 0 %}checked{% endif %}{% endif %}>
+                            <input type="checkbox" id="published" name="published" {% if article != null %}{% if article.published == 0 %}checked{% endif %}{% endif %}>
                         </td>
                     </tr>
                     <tr>
@@ -37,7 +37,7 @@
                             <label for="accroche">Acroche de l'article</label>
                         </td>
                         <td>
-                            <textarea class="accroche" id="accroche" name="accroche">{% if article != null %} {{ article.accroche }} {% endif %}</textarea>
+                            <textarea class="accroche" id="accroche" name="accroche">{% if article != null %}{{ article.accroche }}{% endif %}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -80,9 +80,7 @@
                                 <tr>
                                     <td>Texte</td>
                                     <td>
-                                        <textarea id='paragraphe_{{ cptParagraphe }}' name='paragraphe[{{ cptParagraphe }}][texte]' rows='8' required>
-                                            {{ block.content }}
-                                        </textarea>
+                                        <textarea id='paragraphe_{{ cptParagraphe }}' name='paragraphe[{{ cptParagraphe }}][texte]' rows='8' required>{{ block.content }}</textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -283,11 +281,7 @@
                                 <tr>
                                     <td>Liste</td>
                                     <td>
-                                        <textarea id='list_{{ cptList }}' name='list[{{ cptList }}][items]' rows='8' required>
-                                            {% for item in block.content.items %}
-                                                {{ item }}
-                                            {% endfor %}
-                                        </textarea>
+                                        <textarea id='list_{{ cptList }}' name='list[{{ cptList }}][items]' rows='8' required>{% for item in block.content.items %}{{ item }}{% endfor %}</textarea>
                                     </td>
                                 </tr>
                             </table>

@@ -46,11 +46,12 @@ class DefaultController extends Controller
         $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt DESC')
             ->getResult();
 
-        foreach ($articles as $a)
-            if($a->getSlug() == $id) {
+        foreach ($articles as $a) {
+            if ($a->getSlug() == $id) {
                 $article = $a;
                 break;
             }
+        }
 
         if(!isset($article))
         {
