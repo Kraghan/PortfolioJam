@@ -107,24 +107,28 @@
 
             <!-- You May Also Like Start -->
             <div class="you-may-also-like margin-top-50 margin-bottom-50">
-                <h3>You may also like</h3>
-                <div class="row">
-                    {% for article in articles %}
-                        <div class="col-md-4 col-sm-6 col-xs-12">
-                            <a href="{{ url("post", {"id" : article.slug}) }}"><p>{{ article.title }}</p></a>
-                        </div>
-                    {% endfor %}
+                {% if articles | length %}
+                    <h3>You may also like</h3>
+                    <div class="row">
+                        {% for article in articles %}
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="{{ url("post", {"id" : article.slug}) }}"><p>{{ article.title }}</p></a>
+                            </div>
+                        {% endfor %}
 
-                </div>
-                <h3>Categories related</h3>
-                <div class="row">
-                    {% for cat in categories %}
-                        <div class="col-md-4 col-sm-6 col-xs-12">
-                            <a href="{{ url("homeblog", {"id" : cat.slug}) }}"><p>{{ cat.name }}</p></a>
-                        </div>
-                    {% endfor %}
+                    </div>
+                {% endif %}
+                {% if categories | length %}
+                    <h3>Categories related</h3>
+                    <div class="row">
+                        {% for cat in categories %}
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="{{ url("homeblog", {"id" : cat.slug}) }}"><p>{{ cat.name }}</p></a>
+                            </div>
+                        {% endfor %}
 
-                </div>
+                    </div>
+                {% endif %}
             </div>
             <!-- You May Also Like End -->
 
@@ -132,11 +136,11 @@
 
 
             <!-- Post Comment (Disqus) Start -->
-            <div id="comment" class="comment">
+            <!-- <div id="comment" class="comment">
                 <h3>Discuss about post</h3>
 
 
-            </div>
+            </div> -->
             <!-- Post Comment (Disqus) End -->
 
 

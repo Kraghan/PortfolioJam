@@ -14,15 +14,43 @@ class DefaultController extends Controller
     /**
      * @Route("/{id}", defaults={"id" :""}, name="homeblog")
      */
-    public function indexAction()
+    public function indexAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
         $networks = $em->getRepository("PortfolioBundle:SocialNetwork")
             ->findAll();
 
-        $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt DESC')
-            ->getResult();
+        if($id != "")
+        {
+            $cats = $em->getRepository("PortfolioBundle:Categorie")
+                ->findAll();
+            $catId = "";
+            foreach ($cats as $c)
+                if($c->getSlug() == $id)
+                {
+                    $catId = $c->getId();
+                    break;
+                }
+
+            $mm = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+                ->findBy(array("categoryId" => $catId));
+
+            $ids = array();
+            foreach($mm as $m)
+                $ids[] = $m->getArticleId();
+
+            $articles = $em->createQuery('SELECT a 
+                FROM DevLogBundle:Article a 
+                WHERE a.id IN ('.implode(',',$ids).')
+                AND a.createdAt <= CURRENT_DATE() 
+                AND a.published = 1 
+                ORDER BY a.createdAt DESC')
+                ->getResult();
+        }
+        else
+            $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt DESC')
+                ->getResult();
 
         $filenamephoto = "photo".$this->getFileExtension($this->get('kernel')->getRootDir() . '\\..\\web\\IMG\\photo');
 
@@ -67,6 +95,28 @@ class DefaultController extends Controller
         foreach($mm as $m)
             $categories[] = $em->getRepository("PortfolioBundle:Categorie")
                 ->findOneBy(array("id" => $m->getCategoryId()));
+
+        $ids = array();
+
+        foreach ($categories as $c)
+            $ids[] = $c->getId();
+
+        $otherMm = $em->getRepository("DevLogBundle:ArticleCategoriesMm")
+            ->findBy(array("categoryId" => $ids));
+
+        $ids = array();
+        foreach($otherMm as $other)
+        {
+            if ($other->getArticleId() != $article->getId())
+                $ids[] = $other->getArticleId();
+        }
+
+        if(count($ids) != 0)
+            $articles = $em->createQuery('SELECT a FROM DevLogBundle:Article a WHERE a.id IN ('.implode(",",$ids).') AND a.createdAt <= CURRENT_DATE() AND a.published = 1 ORDER BY a.createdAt')
+                ->setMaxResults(3)
+                ->getResult();
+        else
+            $articles = null;
 
         $blocks = $em->getRepository("DevLogBundle:ArticleBlock")
             ->findBy(array("articleId" => $id), array("ordering" => "ASC"));
